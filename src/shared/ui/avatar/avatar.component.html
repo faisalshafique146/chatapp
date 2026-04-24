@@ -1,0 +1,16 @@
+<div
+  class="avatar"
+  [class.avatar--sm]="size() === 'sm'"
+  [class.avatar--lg]="size() === 'lg'"
+  [style.--avatar-accent]="accentColor()"
+>
+  @if (imageUrl(); as avatarImageUrl) {
+    <img [src]="avatarImageUrl" [alt]="name()" />
+  } @else {
+    <span>{{ initials() }}</span>
+  }
+
+  @if (online()) {
+    <span class="avatar__status" aria-hidden="true"></span>
+  }
+</div>

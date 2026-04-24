@@ -1,0 +1,115 @@
+:root {
+  color-scheme: light;
+  --font-sans: 'Segoe UI Variable', 'Aptos', 'Trebuchet MS', sans-serif;
+  --bg-app: #f3f7f5;
+  --bg-surface: rgba(255, 255, 255, 0.9);
+  --bg-surface-strong: #ffffff;
+  --bg-sidebar: rgba(244, 249, 247, 0.96);
+  --bg-chat: linear-gradient(180deg, #f6faf8 0%, #edf4f1 100%);
+  --bg-bubble-sent: linear-gradient(135deg, #dff7ea 0%, #c7efd9 100%);
+  --bg-bubble-received: #ffffff;
+  --bg-input: rgba(255, 255, 255, 0.92);
+  --bg-accent: #155c48;
+  --bg-accent-soft: rgba(21, 92, 72, 0.12);
+  --bg-hover: rgba(21, 92, 72, 0.08);
+  --bg-overlay: rgba(9, 24, 20, 0.44);
+  --text-primary: #10241d;
+  --text-secondary: #5f756d;
+  --text-muted: #83968f;
+  --text-inverse: #f5fbf8;
+  --border-color: rgba(16, 36, 29, 0.08);
+  --shadow-soft: 0 24px 60px rgba(28, 63, 52, 0.12);
+  --shadow-card: 0 16px 40px rgba(25, 58, 48, 0.1);
+  --status-online: #2fc17b;
+  --status-offline: #96a7a1;
+  --status-away: #f2a94a;
+  --scrollbar-thumb: rgba(29, 72, 58, 0.18);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-app: #081410;
+  --bg-surface: rgba(12, 24, 20, 0.9);
+  --bg-surface-strong: #0f1d18;
+  --bg-sidebar: rgba(10, 22, 18, 0.96);
+  --bg-chat: linear-gradient(180deg, #091611 0%, #132620 100%);
+  --bg-bubble-sent: linear-gradient(135deg, #1c6b53 0%, #154f3f 100%);
+  --bg-bubble-received: #162722;
+  --bg-input: rgba(15, 30, 25, 0.92);
+  --bg-accent: #8dddb5;
+  --bg-accent-soft: rgba(141, 221, 181, 0.14);
+  --bg-hover: rgba(141, 221, 181, 0.1);
+  --bg-overlay: rgba(3, 10, 8, 0.62);
+  --text-primary: #ebf7f1;
+  --text-secondary: #afc3bc;
+  --text-muted: #7c948c;
+  --text-inverse: #081410;
+  --border-color: rgba(235, 247, 241, 0.08);
+  --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.34);
+  --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.28);
+  --status-online: #5ce39d;
+  --status-offline: #6d817b;
+  --status-away: #f8c269;
+  --scrollbar-thumb: rgba(202, 231, 219, 0.18);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at top left, rgba(76, 163, 131, 0.18), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(21, 92, 72, 0.14), transparent 25%),
+    var(--bg-app);
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+}
+
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

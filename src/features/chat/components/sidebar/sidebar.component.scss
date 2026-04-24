@@ -1,0 +1,127 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.35rem;
+  background: var(--bg-sidebar);
+}
+
+.sidebar__topbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+
+  p,
+  h1 {
+    margin: 0;
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  h1 {
+    margin-top: 0.3rem;
+    font-size: 1.6rem;
+  }
+}
+
+.sidebar__badge {
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: var(--bg-accent-soft);
+  color: var(--bg-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.sidebar__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 0;
+  overflow: auto;
+}
+
+.chat-list-item {
+  display: flex;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.9rem;
+  border: 0;
+  border-radius: 22px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+
+  &:hover {
+    background: var(--bg-hover);
+    transform: translateY(-1px);
+  }
+
+  &--active {
+    background: var(--bg-surface-strong);
+    box-shadow: var(--shadow-card);
+  }
+}
+
+.chat-list-item__content {
+  min-width: 0;
+  flex: 1;
+}
+
+.chat-list-item__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  &:last-child {
+    margin-top: 0.3rem;
+  }
+
+  strong,
+  span {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  strong {
+    font-size: 0.98rem;
+  }
+
+  span,
+  time {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+  }
+
+  small {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0 0.3rem;
+    border-radius: 999px;
+    background: var(--bg-accent);
+    color: var(--text-inverse);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    padding: 1rem;
+  }
+}

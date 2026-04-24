@@ -1,0 +1,32 @@
+<header class="chat-header">
+  @if (showBackButton()) {
+    <button class="chat-header__icon-button" type="button" (click)="back.emit()" aria-label="Back to chats">
+      <span aria-hidden="true">&larr;</span>
+    </button>
+  }
+
+  <app-avatar
+    [name]="title()"
+    [accentColor]="accentColor()"
+    [imageUrl]="avatarUrl()"
+    [online]="isOnline()"
+  ></app-avatar>
+
+  <div class="chat-header__content">
+    <strong>{{ title() }}</strong>
+    <span>{{ subtitle() }}</span>
+  </div>
+
+  <span class="chat-header__presence" [class.chat-header__presence--live]="connectionState() === 'connected'">
+    {{ connectionState() === 'connected' ? 'Live' : 'Mock sync' }}
+  </span>
+
+  <button
+    class="chat-header__icon-button"
+    type="button"
+    (click)="themeToggle.emit()"
+    [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+  >
+    <span aria-hidden="true">{{ isDarkMode() ? 'Light' : 'Dark' }}</span>
+  </button>
+</header>

@@ -1,0 +1,45 @@
+<aside class="sidebar">
+  <div class="sidebar__topbar">
+    <div>
+      <p>Inbox</p>
+      <h1>Chats</h1>
+    </div>
+    <span class="sidebar__badge">{{ roomPreviews().length }} active</span>
+  </div>
+
+  <div class="sidebar__list">
+    @for (preview of roomPreviews(); track preview.room.id) {
+      <button
+        class="chat-list-item"
+        type="button"
+        [class.chat-list-item--active]="preview.room.id === currentRoomId()"
+        (click)="selectRoom(preview.room.id)"
+      >
+        <app-avatar
+          [name]="preview.contact.name"
+          [accentColor]="preview.contact.accentColor"
+          [imageUrl]="preview.contact.avatarUrl"
+          [online]="preview.contact.presence === 'online'"
+        ></app-avatar>
+
+        <div class="chat-list-item__content">
+          <div class="chat-list-item__row">
+            <strong>{{ preview.contact.name }}</strong>
+            @if (preview.lastMessage; as lastMessage) {
+              <time [attr.datetime]="lastMessage.timestamp">
+                {{ lastMessage.timestamp | date: 'shortTime' }}
+              </time>
+            }
+          </div>
+
+          <div class="chat-list-item__row">
+            <span>{{ preview.lastMessage?.content ?? 'No messages yet' }}</span>
+            @if (preview.room.unreadCount > 0) {
+              <small>{{ preview.room.unreadCount }}</small>
+            }
+          </div>
+        </div>
+      </button>
+    }
+  </div>
+</aside>

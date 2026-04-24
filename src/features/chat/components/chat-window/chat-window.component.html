@@ -1,0 +1,44 @@
+@if (contact(); as activeContact) {
+  <section class="chat-window">
+    <app-header
+      [title]="activeContact.name"
+      [subtitle]="headerSubtitle()"
+      [accentColor]="activeContact.accentColor"
+      [avatarUrl]="activeContact.avatarUrl"
+      [isOnline]="activeContact.presence === 'online'"
+      [showBackButton]="showBackButton()"
+      [isDarkMode]="isDarkMode()"
+      [connectionState]="connectionState()"
+      (back)="backRequested.emit()"
+      (themeToggle)="toggleTheme()"
+    ></app-header>
+
+    <div #messageViewport class="chat-window__messages">
+      @for (message of messages(); track message.id) {
+        <app-message-bubble
+          [message]="message"
+          [sender]="resolveSender(message)"
+          [isCurrentUser]="isCurrentUserMessage(message)"
+        ></app-message-bubble>
+      }
+
+      @if (typingUser(); as activeTypingUser) {
+        <div class="chat-window__typing">
+          <span></span>
+          <span></span>
+          <span></span>
+          <p>{{ activeTypingUser.name }} is typing</p>
+        </div>
+      }
+    </div>
+
+    <app-message-input (messageSubmit)="sendMessage($event)"></app-message-input>
+  </section>
+} @else {
+  <section class="chat-window chat-window--empty">
+    <div class="chat-window__empty-state">
+      <h2>Select a conversation</h2>
+      <p>Your messages will appear here with mock state that is ready to swap to Socket.IO later.</p>
+    </div>
+  </section>
+}

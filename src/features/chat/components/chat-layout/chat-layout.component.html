@@ -1,0 +1,14 @@
+<main class="chat-layout">
+  <section class="chat-layout__shell">
+    <div class="chat-layout__sidebar" [class.chat-layout__sidebar--hidden]="isMobile() && !showSidebar()">
+      <app-sidebar (chatSelected)="handleChatSelected()"></app-sidebar>
+    </div>
+
+    <div class="chat-layout__window" [class.chat-layout__window--hidden]="isMobile() && showSidebar()">
+      <app-chat-window
+        [showBackButton]="isMobile() && !showSidebar()"
+        (backRequested)="handleBackRequested()"
+      ></app-chat-window>
+    </div>
+  </section>
+</main>

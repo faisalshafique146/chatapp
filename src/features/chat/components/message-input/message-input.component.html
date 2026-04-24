@@ -1,0 +1,15 @@
+<form class="message-input" (ngSubmit)="submitMessage()">
+  <label class="message-input__field">
+    <span class="visually-hidden">Type your message</span>
+    <textarea
+      rows="1"
+      placeholder="Write a message"
+      [formControl]="messageControl"
+      (keydown.enter)="handleEnter($event)"
+    ></textarea>
+  </label>
+
+  <button type="submit" [disabled]="!messageControl.value.trim()">
+    Send
+  </button>
+</form>

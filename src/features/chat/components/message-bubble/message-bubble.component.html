@@ -1,0 +1,12 @@
+<article class="message" [class.message--mine]="isCurrentUser()">
+  <div class="message__bubble">
+    <p>{{ message().content }}</p>
+
+    <footer class="message__meta">
+      <time [attr.datetime]="message().timestamp">{{ message().timestamp | date: 'shortTime' }}</time>
+      @if (isCurrentUser()) {
+        <span>{{ accessibleStatus() }}</span>
+      }
+    </footer>
+  </div>
+</article>
