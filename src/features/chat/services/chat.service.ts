@@ -1,8 +1,16 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { Subject, Subscription, timer } from 'rxjs';
 import { ChatRoom } from '../../../core/models/chat-room.model';
 import { Message, MessageStatus } from '../../../core/models/message.model';
 import { User, UserPresence } from '../../../core/models/user.model';
+import { ChatSocketService } from '../../../core/realtime/chat-socket.service';
+import {
+  ChatSocketMessageStatusPayload,
+  ChatSocketPresencePayload,
+  ChatSocketSnapshot,
+  ChatSocketTypingPayload,
+  ConnectionState
+} from '../../../core/realtime/chat-realtime.types';
 import {
   MOCK_AUTO_REPLIES,
   MOCK_CHAT_ROOMS,
@@ -11,7 +19,7 @@ import {
   MOCK_USERS
 } from './chat.mock-data';
 
-export type ConnectionState = 'connecting' | 'connected' | 'disconnected';
+export type { ConnectionState } from '../../../core/realtime/chat-realtime.types';
 
 export interface ChatRoomPreview {
   room: ChatRoom;
@@ -27,7 +35,8 @@ interface TypingState {
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService {
+export class ChatService implements OnDestroy {
+  private readonly realtimeTransport = inject(ChatSocketService);
   private readonly currentUserState = signal<User>(MOCK_CURRENT_USER);
   private readonly usersState = signal<User[]>(MOCK_USERS);
   private readonly roomsState = signal<ChatRoom[]>(MOCK_CHAT_ROOMS);
@@ -37,13 +46,17 @@ export class ChatService {
   private readonly connectionStateSignal = signal<ConnectionState>('disconnected');
 
   private readonly incomingMessageSubject = new Subject<Message>();
+  private readonly socketDisposers: Array<() => void> = [];
   private mockRealtimeSubscription?: Subscription;
   private mockPresenceSubscription?: Subscription;
+  private mockConnectSubscription?: Subscription;
 
   readonly currentUser = this.currentUserState.asReadonly();
   readonly users = this.usersState.asReadonly();
   readonly currentRoomId = this.activeRoomIdState.asReadonly();
-  readonly connectionState = this.connectionStateSignal.asReadonly();
+  readonly connectionState = computed(() =>
+    this.realtimeTransport.enabled ? this.realtimeTransport.connectionState() : this.connectionStateSignal()
+  );
   readonly incomingMessages$ = this.incomingMessageSubject.asObservable();
 
   readonly rooms = computed(() => this.roomsState());
@@ -77,15 +90,41 @@ export class ChatService {
       }))
   );
 
+  constructor() {
+    this.registerRealtimeListeners();
+  }
+
+  ngOnDestroy(): void {
+    this.mockRealtimeSubscription?.unsubscribe();
+    this.mockPresenceSubscription?.unsubscribe();
+    this.mockConnectSubscription?.unsubscribe();
+    this.socketDisposers.forEach((dispose) => dispose());
+    this.realtimeTransport.disconnect();
+    this.incomingMessageSubject.complete();
+  }
+
   connect(): void {
+    if (this.realtimeTransport.enabled) {
+      if (this.realtimeTransport.connectionState() !== 'disconnected') {
+        return;
+      }
+
+      this.realtimeTransport.connect({
+        userId: this.currentUserState().id,
+        roomId: this.activeRoomIdState()
+      });
+      this.realtimeTransport.joinRoom(this.activeRoomIdState());
+      return;
+    }
+
     if (this.connectionStateSignal() !== 'disconnected') {
       return;
     }
 
     this.connectionStateSignal.set('connecting');
 
-    // This placeholder keeps the API shape ready for a future Socket.IO transport.
-    timer(800).subscribe(() => {
+    this.mockConnectSubscription?.unsubscribe();
+    this.mockConnectSubscription = timer(800).subscribe(() => {
       this.connectionStateSignal.set('connected');
       this.startMockRealtime();
       this.startMockPresenceUpdates();
@@ -93,12 +132,22 @@ export class ChatService {
   }
 
   selectRoom(roomId: string): void {
+    const previousRoomId = this.activeRoomIdState();
+
     this.activeRoomIdState.set(roomId);
     this.typingState.set(null);
     this.updateRoom(roomId, (room) => ({
       ...room,
       unreadCount: 0
     }));
+
+    if (this.realtimeTransport.enabled) {
+      if (previousRoomId && previousRoomId !== roomId) {
+        this.realtimeTransport.leaveRoom(previousRoomId);
+      }
+
+      this.realtimeTransport.joinRoom(roomId);
+    }
   }
 
   sendMessage(content: string): void {
@@ -115,19 +164,131 @@ export class ChatService {
       senderId: this.currentUserState().id,
       content: messageBody,
       timestamp: new Date().toISOString(),
-      status: 'sent'
+      status: this.realtimeTransport.enabled ? 'sending' : 'sent'
     };
 
-    this.appendMessage(message);
+    this.upsertMessage(message);
+
+    if (this.realtimeTransport.enabled) {
+      this.realtimeTransport.sendMessage({
+        messageId: message.id,
+        roomId: message.roomId,
+        senderId: message.senderId,
+        content: message.content,
+        timestamp: message.timestamp
+      });
+      this.realtimeTransport.setTyping(room.id, false);
+      return;
+    }
+
     this.scheduleStatusUpdate(message.id, room.id, 'delivered', 650);
     this.scheduleMockReply(room.id);
   }
 
   receiveMessage(message: Message): void {
-    // Future socket integrations can push normalized inbound events through here.
     this.typingState.set(null);
-    this.appendMessage(message, message.roomId !== this.activeRoomIdState());
+    this.upsertMessage(message, message.roomId !== this.activeRoomIdState());
     this.incomingMessageSubject.next(message);
+  }
+
+  setTyping(isTyping: boolean): void {
+    if (!this.realtimeTransport.enabled) {
+      return;
+    }
+
+    const room = this.currentRoom();
+
+    if (!room) {
+      return;
+    }
+
+    this.realtimeTransport.setTyping(room.id, isTyping);
+  }
+
+  private registerRealtimeListeners(): void {
+    if (!this.realtimeTransport.enabled) {
+      return;
+    }
+
+    this.socketDisposers.push(
+      this.realtimeTransport.on('chat:snapshot', (snapshot) => this.applySnapshot(snapshot))
+    );
+    this.socketDisposers.push(
+      this.realtimeTransport.on('chat:message', (message) => this.receiveMessage(message))
+    );
+    this.socketDisposers.push(
+      this.realtimeTransport.on('chat:typing', (payload) => this.handleRealtimeTyping(payload))
+    );
+    this.socketDisposers.push(
+      this.realtimeTransport.on('chat:presence', (payload) => this.handleRealtimePresence(payload))
+    );
+    this.socketDisposers.push(
+      this.realtimeTransport.on('chat:message-status', (payload) => this.handleRealtimeMessageStatus(payload))
+    );
+    this.socketDisposers.push(
+      this.realtimeTransport.on('chat:error', (message) => {
+        // Keep socket errors visible during development and safe in production.
+        console.error('[chat socket]', message);
+      })
+    );
+  }
+
+  private applySnapshot(snapshot: ChatSocketSnapshot): void {
+    if (snapshot.currentUser) {
+      this.currentUserState.set(snapshot.currentUser);
+    }
+
+    if (snapshot.users) {
+      this.usersState.set(snapshot.users);
+    }
+
+    if (snapshot.rooms) {
+      this.roomsState.set(snapshot.rooms);
+    }
+
+    if (snapshot.messagesByRoom) {
+      this.messagesState.set(snapshot.messagesByRoom);
+    }
+
+    if (snapshot.activeRoomId) {
+      this.activeRoomIdState.set(snapshot.activeRoomId);
+    }
+  }
+
+  private handleRealtimeTyping(payload: ChatSocketTypingPayload): void {
+    if (payload.roomId !== this.activeRoomIdState()) {
+      return;
+    }
+
+    if (payload.userId === this.currentUserState().id) {
+      return;
+    }
+
+    this.typingState.set(
+      payload.isTyping
+        ? {
+            roomId: payload.roomId,
+            userId: payload.userId
+          }
+        : null
+    );
+  }
+
+  private handleRealtimePresence(payload: ChatSocketPresencePayload): void {
+    this.usersState.update((users) =>
+      users.map((user) =>
+        user.id === payload.userId
+          ? {
+              ...user,
+              presence: payload.presence
+            }
+          : user
+      )
+    );
+  }
+
+  private handleRealtimeMessageStatus(payload: ChatSocketMessageStatusPayload): void {
+    this.updateMessageStatus(payload.roomId, payload.messageId, payload.status);
   }
 
   private startMockRealtime(): void {
@@ -216,35 +377,45 @@ export class ChatService {
     delayMs: number
   ): void {
     timer(delayMs).subscribe(() => {
-      this.messagesState.update((messagesByRoom) => ({
-        ...messagesByRoom,
-        [roomId]: (messagesByRoom[roomId] ?? []).map((message) =>
-          message.id === messageId
-            ? {
-                ...message,
-                status: nextStatus
-              }
-            : message
-        )
-      }));
+      this.updateMessageStatus(roomId, messageId, nextStatus);
     });
   }
 
-  private appendMessage(message: Message, incrementUnread = false): void {
+  private upsertMessage(message: Message, incrementUnread = false): void {
+    const isNewMessage = !this.messagesState()[message.roomId]?.some((currentMessage) => currentMessage.id === message.id);
+
     this.messagesState.update((messagesByRoom) => ({
       ...messagesByRoom,
-      [message.roomId]: [...(messagesByRoom[message.roomId] ?? []), message]
+      [message.roomId]: isNewMessage
+        ? [...(messagesByRoom[message.roomId] ?? []), message]
+        : (messagesByRoom[message.roomId] ?? []).map((currentMessage) =>
+            currentMessage.id === message.id ? message : currentMessage
+          )
     }));
 
     this.updateRoom(message.roomId, (room) => ({
       ...room,
-      unreadCount: incrementUnread ? room.unreadCount + 1 : room.unreadCount,
-      updatedAt: message.timestamp
+      unreadCount: incrementUnread && isNewMessage ? room.unreadCount + 1 : room.unreadCount,
+      updatedAt: isNewMessage ? message.timestamp : room.updatedAt
     }));
   }
 
   private updateRoom(roomId: string, updater: (room: ChatRoom) => ChatRoom): void {
     this.roomsState.update((rooms) => rooms.map((room) => (room.id === roomId ? updater(room) : room)));
+  }
+
+  private updateMessageStatus(roomId: string, messageId: string, status: MessageStatus): void {
+    this.messagesState.update((messagesByRoom) => ({
+      ...messagesByRoom,
+      [roomId]: (messagesByRoom[roomId] ?? []).map((message) =>
+        message.id === messageId
+          ? {
+              ...message,
+              status
+            }
+          : message
+      )
+    }));
   }
 
   private resolveRoomContact(room: ChatRoom): User {
