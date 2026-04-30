@@ -1,6 +1,7 @@
 :host {
   display: block;
-  min-height: 100%;
+  height: 100%;
+  min-height: 0;
 }
 
 .auth-card {
@@ -13,6 +14,8 @@
   box-shadow: var(--shadow-card);
   backdrop-filter: blur(18px);
   animation: slide-up-fade 220ms ease;
+  max-height: 100%;
+  overflow: visible;
 }
 
 .auth-card__header {
@@ -90,9 +93,16 @@
     }
   }
 
-  small {
+  .auth-field__hint {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .auth-field__error {
     color: #b54848;
     font-size: 0.8rem;
+    line-height: 1.4;
   }
 }
 
@@ -201,6 +211,15 @@
   .auth-form--signup {
     grid-template-columns: 1fr;
   }
+}
+
+:host .auth-card {
+  display: flex;
+  flex-direction: column;
+}
+
+:host .auth-form {
+  flex: 1 1 auto;
 }
 
 @media (max-width: 540px) {

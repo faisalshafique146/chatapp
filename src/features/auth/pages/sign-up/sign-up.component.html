@@ -1,39 +1,64 @@
 <app-auth-shell class="auth-shell--signup">
   <section class="auth-card">
     <div class="auth-card__header">
-      <span>Start here</span>
-      <h2>Create your ChatApp account</h2>
-      <p>Set up your profile so you can start chatting right away.</p>
+      <span>Create account</span>
+      <h2>Set up your ChatApp profile</h2>
+      <p>
+        Use a real email for login and recovery, choose a unique handle, and you'll be ready to
+        join conversations in a few quick steps.
+      </p>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form auth-form--signup" novalidate>
       <label class="auth-field auth-field--half">
         <span>Full name</span>
-        <input type="text" formControlName="fullName" placeholder="Ayesha Khan" autocomplete="name" />
-        <small *ngIf="form.get('fullName')?.touched && form.get('fullName')?.hasError('required')">
+        <input
+          type="text"
+          formControlName="fullName"
+          placeholder="Ayesha Khan"
+          autocomplete="name"
+          autocapitalize="words"
+        />
+        <small class="auth-field__hint">Shown on your profile and in chats.</small>
+        <small class="auth-field__error" *ngIf="form.get('fullName')?.touched && form.get('fullName')?.hasError('required')">
           Full name is required.
         </small>
-        <small *ngIf="form.get('fullName')?.touched && form.get('fullName')?.hasError('minlength')">
+        <small class="auth-field__error" *ngIf="form.get('fullName')?.touched && form.get('fullName')?.hasError('minlength')">
           Use at least 3 characters.
         </small>
       </label>
 
       <label class="auth-field auth-field--half">
         <span>Username</span>
-        <input type="text" formControlName="handle" placeholder="ayesha" autocomplete="username" />
-        <small *ngIf="form.get('handle')?.touched && form.get('handle')?.hasError('required')">
+        <input
+          type="text"
+          formControlName="handle"
+          placeholder="ayesha"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+        />
+        <small class="auth-field__hint">This is your public chat handle.</small>
+        <small class="auth-field__error" *ngIf="form.get('handle')?.touched && form.get('handle')?.hasError('required')">
           Username is required.
         </small>
-        <small *ngIf="form.get('handle')?.touched && form.get('handle')?.hasError('minlength')">
+        <small class="auth-field__error" *ngIf="form.get('handle')?.touched && form.get('handle')?.hasError('minlength')">
           Use at least 3 characters.
         </small>
       </label>
 
       <label class="auth-field auth-field--full">
         <span>Email</span>
-        <input type="email" formControlName="email" placeholder="you@chatapp.com" autocomplete="email" />
-        <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">Email is required.</small>
-        <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="you@chatapp.com"
+          autocomplete="email"
+          inputmode="email"
+        />
+        <small class="auth-field__hint">Used for sign-in, recovery, and account notices.</small>
+        <small class="auth-field__error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">Email is required.</small>
+        <small class="auth-field__error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
           Enter a valid email address.
         </small>
       </label>
@@ -47,14 +72,20 @@
             placeholder="Create a secure password"
             autocomplete="new-password"
           />
-          <button type="button" class="auth-field__icon-button" (click)="togglePasswordVisibility()">
+          <button
+            type="button"
+            class="auth-field__icon-button"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+          >
             {{ showPassword() ? 'Hide' : 'Show' }}
           </button>
         </div>
-        <small *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+        <small class="auth-field__hint">Use at least 8 characters with a mix of letters and numbers.</small>
+        <small class="auth-field__error" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
           Password is required.
         </small>
-        <small *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
+        <small class="auth-field__error" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
           Password should be at least 8 characters.
         </small>
       </label>
@@ -67,10 +98,10 @@
           placeholder="Repeat your password"
           autocomplete="new-password"
         />
-        <small *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.hasError('required')">
+        <small class="auth-field__error" *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.hasError('required')">
           Please confirm your password.
         </small>
-        <small *ngIf="form.touched && form.hasError('passwordMismatch')">
+        <small class="auth-field__error" *ngIf="form.touched && form.hasError('passwordMismatch')">
           The passwords do not match.
         </small>
       </label>
@@ -80,7 +111,7 @@
         <span>I agree to the ChatApp terms and privacy policy.</span>
       </label>
       <small
-        class="auth-form__helper auth-form__helper--full"
+        class="auth-field__error auth-form__helper auth-form__helper--full"
         *ngIf="form.get('acceptTerms')?.touched && form.get('acceptTerms')?.hasError('requiredTrue')"
       >
         You must accept the terms to continue.
