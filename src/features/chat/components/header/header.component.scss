@@ -45,13 +45,18 @@
   }
 }
 
-.chat-header__icon-button {
-  display: inline-flex;
+.chat-header__actions {
+  position: relative;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0 0.9rem;
+  gap: 0.65rem;
+  margin-left: auto;
+}
+
+.chat-header__icon-button,
+.chat-header__account-toggle,
+.chat-header__logout,
+.chat-header__account-action {
   border: 0;
   border-radius: 14px;
   background: var(--bg-accent-soft);
@@ -66,6 +71,167 @@
   }
 }
 
+.chat-header__icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 0.9rem;
+}
+
+.chat-header__account {
+  position: relative;
+}
+
+.chat-header__account-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0.55rem 0.35rem 0.38rem;
+  min-height: 52px;
+}
+
+.chat-header__account-copy {
+  display: grid;
+  min-width: 0;
+  text-align: left;
+
+  strong,
+  small {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  strong {
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  small {
+    margin-top: 0.12rem;
+    color: var(--text-secondary);
+    font-size: 0.76rem;
+  }
+}
+
+.chat-header__account-menu {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  z-index: 25;
+  width: min(16rem, calc(100vw - 1rem));
+  max-width: calc(100vw - 1rem);
+  max-height: min(50dvh, calc(100dvh - 7rem));
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.chat-header__account-card {
+  padding: 0.7rem;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.chat-header__account-profile {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.chat-header__account-profile-copy {
+  min-width: 0;
+
+  p,
+  strong,
+  span {
+    margin: 0;
+    display: block;
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  strong {
+    margin-top: 0.15rem;
+    font-size: 0.95rem;
+  }
+
+  span {
+    margin-top: 0.15rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+  }
+}
+
+.chat-header__account-stats {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.85rem 0 0;
+  padding: 0.75rem 0 0;
+  border-top: 1px solid var(--border-color);
+
+  div {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  dt {
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 0.84rem;
+    word-break: break-word;
+  }
+}
+
+.chat-header__account-actions {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+
+.chat-header__account-action {
+  display: grid;
+  gap: 0.12rem;
+  width: 100%;
+  padding: 0.62rem 0.75rem;
+  text-align: left;
+
+  span {
+    font-size: 0.84rem;
+    font-weight: 700;
+  }
+
+  small {
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+  }
+}
+
+.chat-header__logout {
+  width: 100%;
+  margin-top: 0.7rem;
+  padding: 0.72rem 0.85rem;
+  background: rgba(181, 72, 72, 0.3);
+  color: #b54848;
+}
+
 @media (max-width: 640px) {
   .chat-header {
     gap: 0.7rem;
@@ -74,5 +240,19 @@
 
   .chat-header__presence {
     display: none;
+  }
+
+  .chat-header__account-toggle {
+    min-height: 46px;
+    gap: 0.55rem;
+  }
+
+  .chat-header__account-copy {
+    display: none;
+  }
+
+  .chat-header__account-menu {
+    width: calc(100vw - 1rem);
+    max-height: 50dvh;
   }
 }

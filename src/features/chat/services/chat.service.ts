@@ -95,12 +95,21 @@ export class ChatService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.disconnect();
+    this.incomingMessageSubject.complete();
+  }
+
+  disconnect(): void {
     this.mockRealtimeSubscription?.unsubscribe();
     this.mockPresenceSubscription?.unsubscribe();
     this.mockConnectSubscription?.unsubscribe();
+    this.mockRealtimeSubscription = undefined;
+    this.mockPresenceSubscription = undefined;
+    this.mockConnectSubscription = undefined;
+    this.connectionStateSignal.set('disconnected');
     this.socketDisposers.forEach((dispose) => dispose());
+    this.socketDisposers.length = 0;
     this.realtimeTransport.disconnect();
-    this.incomingMessageSubject.complete();
   }
 
   connect(): void {
