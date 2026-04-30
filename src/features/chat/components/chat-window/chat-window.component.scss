@@ -14,6 +14,7 @@
   overflow: auto;
   padding: 1.3rem 1.25rem;
   scroll-behavior: smooth;
+  overscroll-behavior: contain;
 }
 
 .chat-window__typing {
