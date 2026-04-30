@@ -2,12 +2,12 @@
   <section class="auth-card">
     <div class="auth-card__header">
       <span>Start here</span>
-      <h2>Create your Hi-Sync account</h2>
-      <p>Set up a workspace-ready profile that can be wired into your backend later.</p>
+      <h2>Create your ChatApp account</h2>
+      <p>Set up your profile so you can start chatting right away.</p>
     </div>
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form" novalidate>
-      <label class="auth-field">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form auth-form--signup" novalidate>
+      <label class="auth-field auth-field--half">
         <span>Full name</span>
         <input type="text" formControlName="fullName" placeholder="Ayesha Khan" autocomplete="name" />
         <small *ngIf="form.get('fullName')?.touched && form.get('fullName')?.hasError('required')">
@@ -18,7 +18,7 @@
         </small>
       </label>
 
-      <label class="auth-field">
+      <label class="auth-field auth-field--half">
         <span>Username</span>
         <input type="text" formControlName="handle" placeholder="ayesha" autocomplete="username" />
         <small *ngIf="form.get('handle')?.touched && form.get('handle')?.hasError('required')">
@@ -29,29 +29,16 @@
         </small>
       </label>
 
-      <label class="auth-field">
+      <label class="auth-field auth-field--full">
         <span>Email</span>
-        <input type="email" formControlName="email" placeholder="you@company.com" autocomplete="email" />
+        <input type="email" formControlName="email" placeholder="you@chatapp.com" autocomplete="email" />
         <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">Email is required.</small>
         <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
           Enter a valid email address.
         </small>
       </label>
 
-      <label class="auth-field">
-        <span>Workspace name</span>
-        <input
-          type="text"
-          formControlName="workspaceName"
-          placeholder="Hi-Sync Workspace"
-          autocomplete="organization"
-        />
-        <small *ngIf="form.get('workspaceName')?.touched && form.get('workspaceName')?.hasError('required')">
-          Workspace name is required.
-        </small>
-      </label>
-
-      <label class="auth-field">
+      <label class="auth-field auth-field--full">
         <span>Password</span>
         <div class="auth-field__password-row">
           <input
@@ -72,7 +59,7 @@
         </small>
       </label>
 
-      <label class="auth-field">
+      <label class="auth-field auth-field--full">
         <span>Confirm password</span>
         <input
           type="password"
@@ -88,15 +75,18 @@
         </small>
       </label>
 
-      <label class="auth-check">
+      <label class="auth-check auth-check--full">
         <input type="checkbox" formControlName="acceptTerms" />
-        <span>I agree to the Hi-Sync terms and privacy policy.</span>
+        <span>I agree to the ChatApp terms and privacy policy.</span>
       </label>
-      <small *ngIf="form.get('acceptTerms')?.touched && form.get('acceptTerms')?.hasError('required')">
+      <small
+        class="auth-form__helper auth-form__helper--full"
+        *ngIf="form.get('acceptTerms')?.touched && form.get('acceptTerms')?.hasError('requiredTrue')"
+      >
         You must accept the terms to continue.
       </small>
 
-      <button type="submit" class="auth-form__submit" [class.auth-form__submit--loading]="isSubmitting()">
+      <button type="submit" class="auth-form__submit auth-form__submit--full" [class.auth-form__submit--loading]="isSubmitting()">
         {{ isSubmitting() ? 'Creating account...' : 'Create account' }}
       </button>
     </form>
