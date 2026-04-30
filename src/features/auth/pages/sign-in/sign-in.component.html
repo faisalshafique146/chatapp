@@ -2,8 +2,8 @@
   <section class="auth-card">
     <div class="auth-card__header">
       <span>Welcome back</span>
-      <h2>Sign in to Hi-Sync</h2>
-      <p>Use your workspace account to continue into the chat app.</p>
+      <h2>Sign in to ChatApp</h2>
+      <p>Use your chat account to continue into the app.</p>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form" novalidate>
@@ -43,7 +43,7 @@
           <span>Remember this device</span>
         </label>
 
-        <a href="mailto:support@hi-sync.local">Forgot password?</a>
+        <a href="mailto:support@chatapp.local">Forgot password?</a>
       </div>
 
       <button type="submit" class="auth-form__submit" [class.auth-form__submit--loading]="isSubmitting()">
@@ -52,8 +52,8 @@
     </form>
 
     <p class="auth-card__footnote">
-      New to Hi-Sync?
-      <a routerLink="/auth/sign-up">Create an account</a>
+      New to ChatApp?
+      <a routerLink="/auth/sign-up">Create one</a>
     </p>
   </section>
 </app-auth-shell>

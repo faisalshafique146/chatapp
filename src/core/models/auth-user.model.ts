@@ -7,7 +7,6 @@ export interface AuthUser {
   handle: string;
   role: AuthAccountRole;
   avatarInitials: string;
-  workspaceName?: string;
   createdAt: string;
 }
 
@@ -29,6 +28,5 @@ export interface SignUpPayload {
   handle: string;
   email: string;
   password: string;
-  workspaceName: string;
   acceptTerms: boolean;
 }

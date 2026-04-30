@@ -9,7 +9,7 @@ import { AuthSession, AuthUser, SignInPayload, SignUpPayload } from '../models/a
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly storageKey = 'hi-sync.auth-session';
+  private readonly storageKey = 'chatapp.auth-session';
   private readonly platformId = inject(PLATFORM_ID);
   private readonly sessionState = signal<AuthSession | null>(this.readSession());
 
@@ -22,7 +22,6 @@ export class AuthService {
       fullName: this.deriveDisplayName(payload.email),
       email: payload.email,
       handle: this.deriveHandle(payload.email),
-      workspaceName: 'Hi-Sync Workspace',
       role: 'member'
     });
 
@@ -37,7 +36,6 @@ export class AuthService {
       fullName: payload.fullName,
       email: payload.email,
       handle: payload.handle,
-      workspaceName: payload.workspaceName,
       role: 'member'
     });
 
@@ -59,7 +57,6 @@ export class AuthService {
     fullName: string;
     email: string;
     handle: string;
-    workspaceName?: string;
     role: AuthUser['role'];
   }): AuthSession {
     const createdAt = new Date().toISOString();
@@ -72,7 +69,6 @@ export class AuthService {
         handle: this.normalizeHandle(userInput.handle),
         role: userInput.role,
         avatarInitials: this.createInitials(userInput.fullName),
-        workspaceName: userInput.workspaceName,
         createdAt
       },
       accessToken: this.buildToken(userInput.email, 'access'),

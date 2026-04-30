@@ -1,6 +1,6 @@
 :host {
   display: block;
-  height: 100%;
+  min-height: 100dvh;
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -251,11 +251,5 @@
   .auth-shell__footer {
     margin-top: 1.2rem;
     font-size: 0.82rem;
-  }
-}
-
-@media (max-width: 720px) {
-  :host(.auth-shell--signup) .auth-shell__brand-panel {
-    display: none;
   }
 }

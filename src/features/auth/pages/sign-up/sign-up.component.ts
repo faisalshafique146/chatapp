@@ -39,7 +39,6 @@ export class SignUpComponent {
       fullName: ['', [Validators.required, Validators.minLength(3)]],
       handle: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      workspaceName: ['Hi-Sync Workspace', [Validators.required, Validators.minLength(2)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]],
       acceptTerms: [false, [Validators.requiredTrue]]

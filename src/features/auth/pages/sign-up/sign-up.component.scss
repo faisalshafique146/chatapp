@@ -1,12 +1,11 @@
 :host {
   display: block;
-  min-height: 100dvh;
+  min-height: 100%;
 }
 
 .auth-card {
   width: 100%;
-  max-width: 34rem;
-  margin: 0 auto;
+  max-width: 100%;
   padding: clamp(1.15rem, 3vw, 2rem);
   border: 1px solid var(--border-color);
   border-radius: 28px;
@@ -50,9 +49,15 @@
   margin-top: 1.65rem;
 }
 
+.auth-form--signup {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
 .auth-field {
   display: grid;
   gap: 0.45rem;
+  min-width: 0;
 
   span {
     font-size: 0.88rem;
@@ -61,6 +66,7 @@
 
   input {
     width: 100%;
+    min-width: 0;
     min-height: 3.35rem;
     padding: 0.9rem 1rem;
     border: 1px solid var(--border-color);
@@ -94,6 +100,11 @@
   display: flex;
   gap: 0.6rem;
   align-items: stretch;
+
+  input {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
 }
 
 .auth-field__icon-button {
@@ -120,6 +131,20 @@
     margin-top: 0.2rem;
     accent-color: var(--bg-accent);
   }
+}
+
+.auth-form__helper {
+  margin-top: -0.5rem;
+}
+
+.auth-form__helper--full {
+  grid-column: 1 / -1;
+}
+
+.auth-field--full,
+.auth-check--full,
+.auth-form__submit--full {
+  grid-column: 1 / -1;
 }
 
 .auth-form__submit {
@@ -161,16 +186,20 @@
 
 @media (max-width: 720px) {
   .auth-card {
-    max-width: 100%;
-    border-radius: 24px;
-    padding: 1rem;
-    box-shadow: var(--shadow-card);
+    border: 0;
+    border-radius: 0;
+    padding: 0.25rem 0 1rem;
+    box-shadow: none;
   }
 
   .auth-card__header {
     h2 {
       font-size: 1.65rem;
     }
+  }
+
+  .auth-form--signup {
+    grid-template-columns: 1fr;
   }
 }
 
