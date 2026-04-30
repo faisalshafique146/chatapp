@@ -1,0 +1,59 @@
+<app-auth-shell>
+  <section class="auth-card">
+    <div class="auth-card__header">
+      <span>Welcome back</span>
+      <h2>Sign in to Hi-Sync</h2>
+      <p>Use your workspace account to continue into the chat app.</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form" novalidate>
+      <label class="auth-field">
+        <span>Email</span>
+        <input type="email" formControlName="email" placeholder="you@company.com" autocomplete="email" />
+        <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">Email is required.</small>
+        <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+          Enter a valid email address.
+        </small>
+      </label>
+
+      <label class="auth-field">
+        <span>Password</span>
+        <div class="auth-field__password-row">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+          />
+          <button type="button" class="auth-field__icon-button" (click)="togglePasswordVisibility()">
+            {{ showPassword() ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <small *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+          Password is required.
+        </small>
+        <small *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
+          Password should be at least 8 characters.
+        </small>
+      </label>
+
+      <div class="auth-form__row">
+        <label class="auth-check">
+          <input type="checkbox" formControlName="rememberMe" />
+          <span>Remember this device</span>
+        </label>
+
+        <a href="mailto:support@hi-sync.local">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="auth-form__submit" [class.auth-form__submit--loading]="isSubmitting()">
+        {{ isSubmitting() ? 'Signing in...' : 'Sign in' }}
+      </button>
+    </form>
+
+    <p class="auth-card__footnote">
+      New to Hi-Sync?
+      <a routerLink="/auth/sign-up">Create an account</a>
+    </p>
+  </section>
+</app-auth-shell>

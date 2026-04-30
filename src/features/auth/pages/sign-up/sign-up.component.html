@@ -1,0 +1,109 @@
+<app-auth-shell class="auth-shell--signup">
+  <section class="auth-card">
+    <div class="auth-card__header">
+      <span>Start here</span>
+      <h2>Create your Hi-Sync account</h2>
+      <p>Set up a workspace-ready profile that can be wired into your backend later.</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form" novalidate>
+      <label class="auth-field">
+        <span>Full name</span>
+        <input type="text" formControlName="fullName" placeholder="Ayesha Khan" autocomplete="name" />
+        <small *ngIf="form.get('fullName')?.touched && form.get('fullName')?.hasError('required')">
+          Full name is required.
+        </small>
+        <small *ngIf="form.get('fullName')?.touched && form.get('fullName')?.hasError('minlength')">
+          Use at least 3 characters.
+        </small>
+      </label>
+
+      <label class="auth-field">
+        <span>Username</span>
+        <input type="text" formControlName="handle" placeholder="ayesha" autocomplete="username" />
+        <small *ngIf="form.get('handle')?.touched && form.get('handle')?.hasError('required')">
+          Username is required.
+        </small>
+        <small *ngIf="form.get('handle')?.touched && form.get('handle')?.hasError('minlength')">
+          Use at least 3 characters.
+        </small>
+      </label>
+
+      <label class="auth-field">
+        <span>Email</span>
+        <input type="email" formControlName="email" placeholder="you@company.com" autocomplete="email" />
+        <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">Email is required.</small>
+        <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+          Enter a valid email address.
+        </small>
+      </label>
+
+      <label class="auth-field">
+        <span>Workspace name</span>
+        <input
+          type="text"
+          formControlName="workspaceName"
+          placeholder="Hi-Sync Workspace"
+          autocomplete="organization"
+        />
+        <small *ngIf="form.get('workspaceName')?.touched && form.get('workspaceName')?.hasError('required')">
+          Workspace name is required.
+        </small>
+      </label>
+
+      <label class="auth-field">
+        <span>Password</span>
+        <div class="auth-field__password-row">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Create a secure password"
+            autocomplete="new-password"
+          />
+          <button type="button" class="auth-field__icon-button" (click)="togglePasswordVisibility()">
+            {{ showPassword() ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <small *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+          Password is required.
+        </small>
+        <small *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
+          Password should be at least 8 characters.
+        </small>
+      </label>
+
+      <label class="auth-field">
+        <span>Confirm password</span>
+        <input
+          type="password"
+          formControlName="confirmPassword"
+          placeholder="Repeat your password"
+          autocomplete="new-password"
+        />
+        <small *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.hasError('required')">
+          Please confirm your password.
+        </small>
+        <small *ngIf="form.touched && form.hasError('passwordMismatch')">
+          The passwords do not match.
+        </small>
+      </label>
+
+      <label class="auth-check">
+        <input type="checkbox" formControlName="acceptTerms" />
+        <span>I agree to the Hi-Sync terms and privacy policy.</span>
+      </label>
+      <small *ngIf="form.get('acceptTerms')?.touched && form.get('acceptTerms')?.hasError('required')">
+        You must accept the terms to continue.
+      </small>
+
+      <button type="submit" class="auth-form__submit" [class.auth-form__submit--loading]="isSubmitting()">
+        {{ isSubmitting() ? 'Creating account...' : 'Create account' }}
+      </button>
+    </form>
+
+    <p class="auth-card__footnote">
+      Already have an account?
+      <a routerLink="/auth/sign-in">Sign in</a>
+    </p>
+  </section>
+</app-auth-shell>
