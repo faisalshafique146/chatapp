@@ -11,6 +11,7 @@
       [connectionState]="connectionState()"
       (back)="backRequested.emit()"
       (themeToggle)="toggleTheme()"
+      (logoutRequested)="logoutRequested.emit()"
     ></app-header>
 
     <div #messageViewport class="chat-window__messages">

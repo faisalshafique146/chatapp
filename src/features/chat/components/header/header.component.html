@@ -21,12 +21,104 @@
     {{ connectionState() === 'connected' ? 'Live' : 'Mock sync' }}
   </span>
 
-  <button
-    class="chat-header__icon-button"
-    type="button"
-    (click)="themeToggle.emit()"
-    [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
-  >
-    <span aria-hidden="true">{{ isDarkMode() ? 'Light' : 'Dark' }}</span>
-  </button>
+  <div class="chat-header__actions">
+    <button
+      class="chat-header__icon-button"
+      type="button"
+      (click)="themeToggle.emit()"
+      [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <span aria-hidden="true">{{ isDarkMode() ? 'Light' : 'Dark' }}</span>
+    </button>
+
+    @if (currentUser(); as user) {
+      <div class="chat-header__account">
+        <button
+          class="chat-header__account-toggle"
+          type="button"
+          (click)="toggleAccountMenu()"
+          [attr.aria-expanded]="isAccountMenuOpen()"
+          aria-haspopup="dialog"
+          [attr.aria-label]="'Open account menu for ' + user.fullName"
+        >
+          <app-avatar
+            [name]="user.fullName"
+            accentColor="#2a7d60"
+            [size]="'sm'"
+            [online]="true"
+          ></app-avatar>
+
+          <span class="chat-header__account-copy">
+            <strong>{{ user.fullName }}</strong>
+            <small>@{{ user.handle }}</small>
+          </span>
+        </button>
+
+        @if (isAccountMenuOpen()) {
+          <section class="chat-header__account-menu" role="dialog" aria-label="Account details and settings">
+            <div class="chat-header__account-card">
+              <div class="chat-header__account-profile">
+                <app-avatar
+                  [name]="user.fullName"
+                  accentColor="#2a7d60"
+                  [size]="'lg'"
+                  [online]="true"
+                ></app-avatar>
+
+                <div class="chat-header__account-profile-copy">
+                  <p>Signed in as</p>
+                  <strong>{{ user.fullName }}</strong>
+                  <span>@{{ user.handle }}</span>
+                </div>
+              </div>
+
+              <dl class="chat-header__account-stats">
+                <div>
+                  <dt>Email</dt>
+                  <dd>{{ user.email }}</dd>
+                </div>
+                <div>
+                  <dt>Role</dt>
+                  <dd>{{ user.role }}</dd>
+                </div>
+                <div>
+                  <dt>Member since</dt>
+                  <dd>{{ user.createdAt | date: 'mediumDate' }}</dd>
+                </div>
+              </dl>
+
+              <div class="chat-header__account-actions">
+                <button type="button" class="chat-header__account-action" (click)="copyValue(user.email, 'email')">
+                  <span>Copy email</span>
+                  <small>{{ copyStatus() === 'email' ? 'Copied' : 'Use for recovery and support' }}</small>
+                </button>
+
+                <button type="button" class="chat-header__account-action" (click)="copyValue(user.handle, 'handle')">
+                  <span>Copy username</span>
+                  <small>{{ copyStatus() === 'handle' ? 'Copied' : 'Share your chat handle' }}</small>
+                </button>
+
+                <div class="chat-header__account-action chat-header__account-action--static">
+                  <span>Profile settings</span>
+                  <small>Edit your name, avatar, and handle</small>
+                </div>
+
+                <div class="chat-header__account-action chat-header__account-action--static">
+                  <span>Notification settings</span>
+                  <small>Mute alerts, sounds, and badges</small>
+                </div>
+
+                <button type="button" class="chat-header__account-action" (click)="toggleTheme()">
+                  <span>Appearance</span>
+                  <small>Switch between light and dark theme</small>
+                </button>
+              </div>
+
+              <button type="button" class="chat-header__logout" (click)="logout()">Log out</button>
+            </div>
+          </section>
+        }
+      </div>
+    }
+  </div>
 </header>

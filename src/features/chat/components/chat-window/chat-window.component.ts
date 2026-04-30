@@ -39,6 +39,7 @@ export class ChatWindowComponent {
   readonly isDarkMode = this.themeService.isDarkMode;
   readonly showBackButton = input<boolean>(false);
   readonly backRequested = output<void>();
+  readonly logoutRequested = output<void>();
 
   readonly headerSubtitle = computed(() => {
     const typingUser = this.typingUser();

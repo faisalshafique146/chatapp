@@ -8,6 +8,7 @@
       <app-chat-window
         [showBackButton]="isMobile() && !showSidebar()"
         (backRequested)="handleBackRequested()"
+        (logoutRequested)="handleLogoutRequested()"
       ></app-chat-window>
     </div>
   </section>
