@@ -15,32 +15,6 @@
   align-items: stretch;
 }
 
-.auth-shell__theme-toggle {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 2;
-  min-height: 2.25rem;
-  padding: 0 0.8rem;
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  font-size: 0.82rem;
-  font-weight: 700;
-  line-height: 1;
-  box-shadow: var(--shadow-card);
-  backdrop-filter: blur(18px);
-  transition:
-    transform 160ms ease,
-    background-color 160ms ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: var(--bg-surface-strong);
-  }
-}
-
 .auth-shell__brand-panel,
 .auth-shell__form-panel {
   position: relative;
@@ -66,7 +40,7 @@
   position: relative;
   display: grid;
   place-items: center;
-  padding: 3.25rem 1rem 1rem;
+  padding: 1rem;
   background: var(--bg-chat);
   overflow-y: auto;
   overflow-x: hidden;
@@ -85,6 +59,10 @@
 
 :host(.auth-shell--signup) .auth-shell__form-card {
   width: min(100%, 38rem);
+}
+
+:host(.auth-shell--signin) .auth-shell__form-panel {
+  overflow: hidden;
 }
 
 .auth-shell__glow {

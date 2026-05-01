@@ -5,6 +5,7 @@
 }
 
 .auth-card {
+  position: relative;
   width: 100%;
   max-width: 100%;
   padding: clamp(1.15rem, 3vw, 2rem);
@@ -16,6 +17,35 @@
   animation: slide-up-fade 220ms ease;
   max-height: 100%;
   overflow: visible;
+}
+
+.auth-card--signup {
+  padding-top: clamp(2.9rem, 4vw, 3.45rem);
+}
+
+.auth-card__theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  min-height: 2rem;
+  padding: 0 0.7rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(18px);
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: var(--bg-surface-strong);
+  }
 }
 
 .auth-card__header {
@@ -200,6 +230,17 @@
     border-radius: 0;
     padding: 0.25rem 0 1rem;
     box-shadow: none;
+  }
+
+  .auth-card--signup {
+    padding-top: 2.75rem;
+  }
+
+  .auth-card__theme-toggle {
+    top: 0.75rem;
+    right: 0.75rem;
+    min-height: 1.9rem;
+    padding: 0 0.62rem;
   }
 
   .auth-card__header {

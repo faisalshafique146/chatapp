@@ -1,15 +1,24 @@
-<app-auth-shell>
-  <section class="auth-card">
+<app-auth-shell class="auth-shell--signin">
+  <section class="auth-card auth-card--signin">
+    <button
+      type="button"
+      class="auth-card__theme-toggle"
+      (click)="toggleTheme()"
+      [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <span aria-hidden="true">{{ isDarkMode() ? 'Light' : 'Dark' }}</span>
+    </button>
+
     <div class="auth-card__header">
       <span>Welcome back</span>
-      <h2>Sign in to ChatApp</h2>
-      <p>Use your chat account to continue into the app.</p>
+      <h2>Sign in to Hi-Sync</h2>
+      <p>Use your Hi-Sync account to continue into the app.</p>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form" novalidate>
       <label class="auth-field">
         <span>Email</span>
-        <input type="email" formControlName="email" placeholder="you@company.com" autocomplete="email" />
+        <input type="email" formControlName="email" placeholder="you@hisync.com" autocomplete="email" />
         <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">Email is required.</small>
         <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
           Enter a valid email address.
@@ -43,7 +52,7 @@
           <span>Remember this device</span>
         </label>
 
-        <a href="mailto:support@chatapp.local">Forgot password?</a>
+        <a href="mailto:support@hisync.local">Forgot password?</a>
       </div>
 
       <button type="submit" class="auth-form__submit" [class.auth-form__submit--loading]="isSubmitting()">
@@ -52,7 +61,7 @@
     </form>
 
     <p class="auth-card__footnote">
-      New to ChatApp?
+      New to Hi-Sync?
       <a routerLink="/auth/sign-up">Create one</a>
     </p>
   </section>

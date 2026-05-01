@@ -4,9 +4,9 @@
     <div class="auth-shell__glow auth-shell__glow--two"></div>
 
     <div class="auth-shell__brand">
-      <img class="auth-shell__mark" src="/files/apple-touch-icon.png" alt="ChatApp logo" />
+      <img class="auth-shell__mark" src="/files/apple-touch-icon.png" alt="Hi-Sync logo" />
       <div>
-        <p>ChatApp</p>
+        <p>Hi-Sync</p>
         <strong>Fast, private chat for everyday conversations.</strong>
       </div>
     </div>
@@ -37,15 +37,6 @@
   </section>
 
   <section class="auth-shell__form-panel">
-    <button
-      type="button"
-      class="auth-shell__theme-toggle"
-      (click)="toggleTheme()"
-      [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
-    >
-      <span aria-hidden="true">{{ isDarkMode() ? 'Light' : 'Dark' }}</span>
-    </button>
-
     <div class="auth-shell__form-card">
       <ng-content></ng-content>
     </div>

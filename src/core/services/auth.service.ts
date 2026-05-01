@@ -108,7 +108,7 @@ export class AuthService {
   }
 
   private deriveDisplayName(email: string): string {
-    const prefix = email.split('@')[0] || 'Hi Sync user';
+    const prefix = email.split('@')[0] || 'Hi-Sync user';
     return prefix
       .split(/[._-]/)
       .filter(Boolean)
@@ -118,7 +118,7 @@ export class AuthService {
 
   private deriveHandle(email: string): string {
     const prefix = email.split('@')[0] || 'user';
-    return prefix.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'hising';
+    return prefix.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'hisync';
   }
 
   private normalizeHandle(handle: string): string {

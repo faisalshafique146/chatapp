@@ -1,8 +1,17 @@
 <app-auth-shell class="auth-shell--signup">
-  <section class="auth-card">
+  <section class="auth-card auth-card--signup">
+    <button
+      type="button"
+      class="auth-card__theme-toggle"
+      (click)="toggleTheme()"
+      [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <span aria-hidden="true">{{ isDarkMode() ? 'Light' : 'Dark' }}</span>
+    </button>
+
     <div class="auth-card__header">
       <span>Create account</span>
-      <h2>Set up your ChatApp profile</h2>
+      <h2>Set up your Hi-Sync profile</h2>
       <p>
         Use a real email for login and recovery, choose a unique handle, and you'll be ready to
         join conversations in a few quick steps.
@@ -52,7 +61,7 @@
         <input
           type="email"
           formControlName="email"
-          placeholder="you@chatapp.com"
+          placeholder="you@hisync.com"
           autocomplete="email"
           inputmode="email"
         />
@@ -108,7 +117,7 @@
 
       <label class="auth-check auth-check--full">
         <input type="checkbox" formControlName="acceptTerms" />
-        <span>I agree to the ChatApp terms and privacy policy.</span>
+        <span>I agree to the Hi-Sync terms and privacy policy.</span>
       </label>
       <small
         class="auth-field__error auth-form__helper auth-form__helper--full"
