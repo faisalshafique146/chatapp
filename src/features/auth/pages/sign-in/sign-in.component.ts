@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 
 import { AuthShellComponent } from '../../components/auth-shell/auth-shell.component';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ThemeService } from '../../../../core/services/theme.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -18,9 +19,11 @@ export class SignInComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly themeService = inject(ThemeService);
 
   readonly isSubmitting = signal(false);
   readonly showPassword = signal(false);
+  readonly isDarkMode = this.themeService.isDarkMode;
 
   readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -49,5 +52,9 @@ export class SignInComponent {
 
   togglePasswordVisibility(): void {
     this.showPassword.update((current) => !current);
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
   }
 }

@@ -1,6 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-
-import { ThemeService } from '../../../../core/services/theme.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-auth-shell',
@@ -10,11 +8,4 @@ import { ThemeService } from '../../../../core/services/theme.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuthShellComponent {
-  private readonly themeService = inject(ThemeService);
-
-  readonly isDarkMode = this.themeService.isDarkMode;
-
-  toggleTheme(): void {
-    this.themeService.toggleTheme();
-  }
 }
