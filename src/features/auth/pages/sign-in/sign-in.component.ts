@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -23,6 +24,7 @@ export class SignInComponent {
 
   readonly isSubmitting = signal(false);
   readonly showPassword = signal(false);
+  readonly submitError = signal<string | null>(null);
   readonly isDarkMode = this.themeService.isDarkMode;
 
   readonly form = this.fb.nonNullable.group({
@@ -38,14 +40,18 @@ export class SignInComponent {
     }
 
     this.isSubmitting.set(true);
+    this.submitError.set(null);
 
     this.authService.signIn(this.form.getRawValue()).subscribe({
       next: () => {
         this.isSubmitting.set(false);
         void this.router.navigateByUrl('/chat');
       },
-      error: () => {
+      error: (error: HttpErrorResponse) => {
         this.isSubmitting.set(false);
+        this.submitError.set(
+          error.error?.message ?? error.message ?? 'Sign in failed. Please check your credentials.'
+        );
       }
     });
   }

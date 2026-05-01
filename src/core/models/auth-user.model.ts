@@ -7,7 +7,9 @@ export interface AuthUser {
   handle: string;
   role: AuthAccountRole;
   avatarInitials: string;
+  profilePic?: string | null;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface AuthSession {
@@ -29,4 +31,5 @@ export interface SignUpPayload {
   email: string;
   password: string;
   acceptTerms: boolean;
+  profilePic?: File | null;
 }

@@ -82,8 +82,8 @@ export class ChatWindowComponent {
     });
   }
 
-  sendMessage(content: string): void {
-    this.chatService.sendMessage(content);
+  sendMessage(content: string, imageFile: File | null = null): void {
+    this.chatService.sendMessage(content, imageFile);
   }
 
   isCurrentUserMessage(message: Message): boolean {

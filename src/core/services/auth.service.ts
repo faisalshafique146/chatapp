@@ -1,9 +1,23 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { PLATFORM_ID } from '@angular/core';
-import { Observable, delay, of, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { Observable, map, tap } from 'rxjs';
 
+import { API_BASE_URL } from '../config/backend.config';
 import { AuthSession, AuthUser, SignInPayload, SignUpPayload } from '../models/auth-user.model';
+
+interface ApiEnvelope<T> {
+  statusCode: number;
+  message: string;
+  data: T;
+}
+
+interface AuthPayload {
+  user: AuthUser;
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +25,7 @@ import { AuthSession, AuthUser, SignInPayload, SignUpPayload } from '../models/a
 export class AuthService {
   private readonly storageKey = 'chatapp.auth-session';
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly http = inject(HttpClient);
   private readonly sessionState = signal<AuthSession | null>(this.readSession());
 
   readonly session = this.sessionState.asReadonly();
@@ -18,31 +33,35 @@ export class AuthService {
   readonly isAuthenticated = computed(() => this.sessionState() !== null);
 
   signIn(payload: SignInPayload): Observable<AuthSession> {
-    const session = this.createSession({
-      fullName: this.deriveDisplayName(payload.email),
-      email: payload.email,
-      handle: this.deriveHandle(payload.email),
-      role: 'member'
-    });
-
-    return of(session).pipe(
-      delay(450),
-      tap((nextSession) => this.persistSession(nextSession))
-    );
+    return this.http
+      .post<ApiEnvelope<AuthPayload>>(`${API_BASE_URL}/auth/login`, {
+        email: payload.email,
+        password: payload.password
+      })
+      .pipe(
+        map((response) => this.toSession(response.data)),
+        tap((session) => this.persistSession(session))
+      );
   }
 
   signUp(payload: SignUpPayload): Observable<AuthSession> {
-    const session = this.createSession({
-      fullName: payload.fullName,
-      email: payload.email,
-      handle: payload.handle,
-      role: 'member'
-    });
+    const formData = new FormData();
+    formData.append('fullName', payload.fullName);
+    formData.append('username', payload.handle);
+    formData.append('email', payload.email);
+    formData.append('password', payload.password);
+    formData.append('acceptTerms', String(payload.acceptTerms));
 
-    return of(session).pipe(
-      delay(550),
-      tap((nextSession) => this.persistSession(nextSession))
-    );
+    if (payload.profilePic) {
+      formData.append('profilePic', payload.profilePic);
+    }
+
+    return this.http
+      .post<ApiEnvelope<AuthPayload>>(`${API_BASE_URL}/auth/signup`, formData)
+      .pipe(
+        map((response) => this.toSession(response.data)),
+        tap((session) => this.persistSession(session))
+      );
   }
 
   signOut(): void {
@@ -53,27 +72,12 @@ export class AuthService {
     }
   }
 
-  private createSession(userInput: {
-    fullName: string;
-    email: string;
-    handle: string;
-    role: AuthUser['role'];
-  }): AuthSession {
-    const createdAt = new Date().toISOString();
-
+  private toSession(payload: AuthPayload): AuthSession {
     return {
-      user: {
-        id: this.createId(),
-        fullName: userInput.fullName,
-        email: userInput.email.toLowerCase(),
-        handle: this.normalizeHandle(userInput.handle),
-        role: userInput.role,
-        avatarInitials: this.createInitials(userInput.fullName),
-        createdAt
-      },
-      accessToken: this.buildToken(userInput.email, 'access'),
-      refreshToken: this.buildToken(userInput.email, 'refresh'),
-      expiresAt: this.buildExpiry()
+      user: payload.user,
+      accessToken: payload.accessToken,
+      refreshToken: payload.refreshToken,
+      expiresAt: payload.expiresAt
     };
   }
 
@@ -105,51 +109,5 @@ export class AuthService {
 
   private canUseStorage(): boolean {
     return isPlatformBrowser(this.platformId) && typeof window !== 'undefined';
-  }
-
-  private deriveDisplayName(email: string): string {
-    const prefix = email.split('@')[0] || 'Hi-Sync user';
-    return prefix
-      .split(/[._-]/)
-      .filter(Boolean)
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join(' ');
-  }
-
-  private deriveHandle(email: string): string {
-    const prefix = email.split('@')[0] || 'user';
-    return prefix.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'hisync';
-  }
-
-  private normalizeHandle(handle: string): string {
-    const trimmed = handle.trim().replace(/^@+/, '');
-    return trimmed.replace(/[^a-zA-Z0-9._-]/g, '').toLowerCase();
-  }
-
-  private createInitials(fullName: string): string {
-    return fullName
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part.charAt(0).toUpperCase())
-      .join('');
-  }
-
-  private buildToken(email: string, type: 'access' | 'refresh'): string {
-    const payload = `${email}:${type}:${Date.now()}`;
-    const encoded = typeof btoa === 'function' ? btoa(payload) : payload;
-    return `${type}.${encoded}`;
-  }
-
-  private buildExpiry(): string {
-    return new Date(Date.now() + 1000 * 60 * 60 * 12).toISOString();
-  }
-
-  private createId(): string {
-    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-      return crypto.randomUUID();
-    }
-
-    return `user_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
   }
 }

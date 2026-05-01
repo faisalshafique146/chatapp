@@ -16,6 +16,10 @@
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form" novalidate>
+      @if (submitError(); as errorMessage) {
+        <p class="auth-form__error" aria-live="polite">{{ errorMessage }}</p>
+      }
+
       <label class="auth-field">
         <span>Email</span>
         <input type="email" formControlName="email" placeholder="you@hisync.com" autocomplete="email" />

@@ -1,4 +1,13 @@
 <form class="message-input" (ngSubmit)="submitMessage()">
+  <label class="message-input__attach">
+    <input
+      type="file"
+      accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+      (change)="handleImageSelected($event)"
+    />
+    <span>Attach</span>
+  </label>
+
   <label class="message-input__field">
     <span class="visually-hidden">Type your message</span>
     <textarea
@@ -7,9 +16,18 @@
       [formControl]="messageControl"
       (keydown.enter)="handleEnter($event)"
     ></textarea>
+    @if (selectedImage(); as imageFile) {
+      <small class="message-input__attachment-meta">
+        <span>Attached: {{ imageFile.name }}</span>
+        <button type="button" (click)="removeAttachment()">Remove</button>
+      </small>
+    }
+    @if (selectedImageError(); as attachmentError) {
+      <small class="message-input__error">{{ attachmentError }}</small>
+    }
   </label>
 
-  <button type="submit" [disabled]="!messageControl.value.trim()">
+  <button type="submit" [disabled]="!messageControl.value.trim() && !selectedImage()">
     Send
   </button>
 </form>

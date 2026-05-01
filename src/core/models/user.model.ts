@@ -7,4 +7,9 @@ export interface User {
   avatarUrl?: string;
   presence: UserPresence;
   statusMessage: string;
+  fullName?: string;
+  email?: string;
+  handle?: string;
+  profilePic?: string | null;
+  createdAt?: string;
 }

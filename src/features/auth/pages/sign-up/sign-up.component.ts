@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -19,6 +20,27 @@ const passwordMatchValidator: ValidatorFn = (control: AbstractControl): Validati
   return password === confirmPassword ? null : { passwordMismatch: true };
 };
 
+const allowedProfileImageTypes = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']);
+const maxProfileImageSize = 5 * 1024 * 1024;
+
+const profileImageValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const file = control.value as File | null;
+
+  if (!file) {
+    return null;
+  }
+
+  if (!allowedProfileImageTypes.has(file.type)) {
+    return { invalidFileType: true };
+  }
+
+  if (file.size > maxProfileImageSize) {
+    return { fileTooLarge: true };
+  }
+
+  return null;
+};
+
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -35,6 +57,8 @@ export class SignUpComponent {
 
   readonly isSubmitting = signal(false);
   readonly showPassword = signal(false);
+  readonly submitError = signal<string | null>(null);
+  readonly submitAttempted = signal(false);
   readonly isDarkMode = this.themeService.isDarkMode;
 
   readonly form = this.fb.nonNullable.group(
@@ -44,18 +68,23 @@ export class SignUpComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]],
+      profilePic: [null as File | null, [profileImageValidator]],
       acceptTerms: [false, [Validators.requiredTrue]]
     },
     { validators: passwordMatchValidator }
   );
 
   submit(): void {
+    this.submitAttempted.set(true);
+
     if (this.form.invalid || this.isSubmitting()) {
       this.form.markAllAsTouched();
+      this.submitError.set('Please fix the highlighted fields before creating your account.');
       return;
     }
 
     this.isSubmitting.set(true);
+    this.submitError.set(null);
 
     const { confirmPassword, ...payload } = this.form.getRawValue();
 
@@ -64,8 +93,13 @@ export class SignUpComponent {
         this.isSubmitting.set(false);
         void this.router.navigateByUrl('/chat');
       },
-      error: () => {
+      error: (error: HttpErrorResponse) => {
         this.isSubmitting.set(false);
+        this.submitError.set(
+          error.error?.message ??
+            error.message ??
+            'Sign up failed. Please check your details and try again.'
+        );
       }
     });
   }
@@ -76,5 +110,14 @@ export class SignUpComponent {
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+
+  onProfilePicSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+
+    this.form.controls.profilePic.setValue(file);
+    this.form.controls.profilePic.markAsTouched();
+    this.form.controls.profilePic.updateValueAndValidity();
   }
 }

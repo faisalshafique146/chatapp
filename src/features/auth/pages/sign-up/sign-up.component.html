@@ -19,6 +19,10 @@
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form auth-form--signup" novalidate>
+      @if (submitError(); as errorMessage) {
+        <p class="auth-form__error auth-form__error--full" aria-live="polite">{{ errorMessage }}</p>
+      }
+
       <label class="auth-field auth-field--half">
         <span>Full name</span>
         <input
@@ -54,6 +58,25 @@
         <small class="auth-field__error" *ngIf="form.get('handle')?.touched && form.get('handle')?.hasError('minlength')">
           Use at least 3 characters.
         </small>
+      </label>
+
+      <label class="auth-field auth-field--full">
+        <span>Profile picture</span>
+        <input
+          type="file"
+          accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+          (change)="onProfilePicSelected($event)"
+        />
+        <small class="auth-field__hint">Optional. PNG, JPG, WebP, or GIF. Max size 5 MB.</small>
+        <small class="auth-field__error" *ngIf="form.get('profilePic')?.touched && form.get('profilePic')?.hasError('invalidFileType')">
+          Please choose an image file.
+        </small>
+        <small class="auth-field__error" *ngIf="form.get('profilePic')?.touched && form.get('profilePic')?.hasError('fileTooLarge')">
+          Profile images must be 5 MB or smaller.
+        </small>
+        @if (form.get('profilePic')?.value; as profilePic) {
+          <small class="auth-field__hint">Selected: {{ profilePic.name }}</small>
+        }
       </label>
 
       <label class="auth-field auth-field--full">
