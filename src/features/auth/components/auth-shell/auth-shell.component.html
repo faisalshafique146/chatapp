@@ -37,6 +37,15 @@
   </section>
 
   <section class="auth-shell__form-panel">
+    <button
+      type="button"
+      class="auth-shell__theme-toggle"
+      (click)="toggleTheme()"
+      [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <span aria-hidden="true">{{ isDarkMode() ? 'Light' : 'Dark' }}</span>
+    </button>
+
     <div class="auth-shell__form-card">
       <ng-content></ng-content>
     </div>

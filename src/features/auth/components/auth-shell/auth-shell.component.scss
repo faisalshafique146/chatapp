@@ -5,6 +5,7 @@
 }
 
 .auth-shell {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(420px, 0.85fr);
   height: 100%;
@@ -12,6 +13,32 @@
   padding: 1.25rem;
   gap: 1.25rem;
   align-items: stretch;
+}
+
+.auth-shell__theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  min-height: 2.25rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(18px);
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: var(--bg-surface-strong);
+  }
 }
 
 .auth-shell__brand-panel,
@@ -36,9 +63,10 @@
 }
 
 .auth-shell__form-panel {
+  position: relative;
   display: grid;
   place-items: center;
-  padding: 1rem;
+  padding: 3.25rem 1rem 1rem;
   background: var(--bg-chat);
   overflow-y: auto;
   overflow-x: hidden;
@@ -171,7 +199,7 @@
     padding: 1rem 1rem 1.15rem;
     border: 1px solid var(--border-color);
     border-radius: 22px;
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--bg-surface);
     box-shadow: var(--shadow-card);
   }
 
@@ -209,6 +237,14 @@
     gap: 0.75rem;
   }
 
+  .auth-shell__theme-toggle {
+    top: 0.85rem;
+    right: 0.85rem;
+    min-height: 2rem;
+    padding: 0 0.7rem;
+    font-size: 0.78rem;
+  }
+
   .auth-shell__brand-panel,
   .auth-shell__form-panel {
     border-radius: 24px;
@@ -237,6 +273,6 @@
 
   .auth-shell__form-panel {
     place-items: start center;
-    padding-top: 0.9rem;
+    padding-top: 3rem;
   }
 }
