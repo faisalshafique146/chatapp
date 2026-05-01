@@ -2,6 +2,10 @@
   <div class="message__bubble">
     <p>{{ message().content }}</p>
 
+    @if (message().imageUrl; as imageUrl) {
+      <img class="message__image" [src]="imageUrl" [alt]="'Attachment from ' + sender().name" />
+    }
+
     <footer class="message__meta">
       <time [attr.datetime]="message().timestamp">{{ message().timestamp | date: 'shortTime' }}</time>
       @if (isCurrentUser()) {

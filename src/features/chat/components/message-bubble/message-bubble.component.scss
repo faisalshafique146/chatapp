@@ -28,6 +28,15 @@
   }
 }
 
+.message__image {
+  display: block;
+  width: 100%;
+  max-width: 24rem;
+  margin-top: 0.65rem;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
 .message__meta {
   display: flex;
   justify-content: flex-end;

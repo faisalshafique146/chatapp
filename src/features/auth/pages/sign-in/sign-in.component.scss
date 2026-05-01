@@ -79,6 +79,17 @@
   margin-top: 1.65rem;
 }
 
+.auth-form__error {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(181, 72, 72, 0.35);
+  border-radius: 16px;
+  background: rgba(181, 72, 72, 0.08);
+  color: #b54848;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
 .auth-field {
   display: grid;
   gap: 0.45rem;

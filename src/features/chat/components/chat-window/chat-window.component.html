@@ -33,13 +33,13 @@
       }
     </div>
 
-    <app-message-input (messageSubmit)="sendMessage($event)"></app-message-input>
+    <app-message-input (messageSubmit)="sendMessage($event.content, $event.imageFile)"></app-message-input>
   </section>
 } @else {
   <section class="chat-window chat-window--empty">
     <div class="chat-window__empty-state">
       <h2>Select a conversation</h2>
-      <p>Your messages will appear here with mock state that is ready to swap to Socket.IO later.</p>
+      <p>Your messages will appear here once you open a chat from the sidebar.</p>
     </div>
   </section>
 }

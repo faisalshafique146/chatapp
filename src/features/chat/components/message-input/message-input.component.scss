@@ -7,8 +7,34 @@
   background: var(--bg-input);
 }
 
+.message-input__attach {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 84px;
+  min-height: 56px;
+  padding: 0 0.95rem;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  background: var(--bg-surface-strong);
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+
+  input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+}
+
 .message-input__field {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 textarea {
@@ -59,6 +85,30 @@ button {
   }
 }
 
+.message-input__attachment-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+
+  button {
+    min-width: auto;
+    min-height: auto;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--bg-accent);
+    font-weight: 700;
+  }
+}
+
+.message-input__error {
+  color: #c24e4e;
+  font-size: 0.8rem;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -75,8 +125,10 @@ button {
   .message-input {
     gap: 0.7rem;
     padding: 0.85rem 0.9rem 1rem;
+    flex-wrap: wrap;
   }
 
+  .message-input__attach,
   button {
     min-width: 84px;
   }

@@ -1,6 +1,7 @@
 import { Injectable, NgZone, inject, signal } from '@angular/core';
 import { io, type ManagerOptions, type Socket, type SocketOptions } from 'socket.io-client';
 import { CHAT_REALTIME_CONFIG } from './chat-realtime.config';
+import { AuthService } from '../services/auth.service';
 import {
   ClientToServerEvents,
   ChatSocketConnectContext,
@@ -16,6 +17,7 @@ type SocketClient = Socket<ServerToClientEvents, ClientToServerEvents>;
 export class ChatSocketService {
   private readonly zone = inject(NgZone);
   private readonly config = inject(CHAT_REALTIME_CONFIG);
+  private readonly authService = inject(AuthService);
 
   private socket?: SocketClient;
   private currentUserId: string | null = null;
@@ -218,7 +220,7 @@ export class ChatSocketService {
   private createAuthPayload(userId: string): Record<string, string | null> {
     return {
       userId,
-      token: this.config.authToken?.() ?? null
+      token: this.config.authToken?.() ?? this.authService.session()?.accessToken ?? null
     };
   }
 }

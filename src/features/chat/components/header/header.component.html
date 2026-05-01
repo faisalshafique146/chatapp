@@ -18,7 +18,7 @@
   </div>
 
   <span class="chat-header__presence" [class.chat-header__presence--live]="connectionState() === 'connected'">
-    {{ connectionState() === 'connected' ? 'Live' : 'Mock sync' }}
+    {{ connectionState() === 'connected' ? 'Live' : 'Offline' }}
   </span>
 
   <div class="chat-header__actions">
@@ -43,7 +43,8 @@
         >
           <app-avatar
             [name]="user.fullName"
-            accentColor="#2a7d60"
+            [accentColor]="'#2a7d60'"
+            [imageUrl]="user.profilePic ?? undefined"
             [size]="'sm'"
             [online]="true"
           ></app-avatar>
@@ -60,7 +61,8 @@
               <div class="chat-header__account-profile">
                 <app-avatar
                   [name]="user.fullName"
-                  accentColor="#2a7d60"
+                  [accentColor]="'#2a7d60'"
+                  [imageUrl]="user.profilePic ?? undefined"
                   [size]="'lg'"
                   [online]="true"
                 ></app-avatar>

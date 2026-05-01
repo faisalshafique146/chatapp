@@ -40,7 +40,7 @@ export interface ChatSocketSnapshot {
   users?: User[];
   rooms?: ChatRoom[];
   messagesByRoom?: Record<string, Message[]>;
-  activeRoomId?: string;
+  activeRoomId?: string | null;
 }
 
 export interface ServerToClientEvents {

@@ -23,6 +23,7 @@ export class ChatLayoutComponent implements OnInit {
   readonly showSidebar = signal(!(typeof window !== 'undefined' && window.innerWidth < 900));
 
   ngOnInit(): void {
+    this.chatService.initialize();
     this.chatService.connect();
 
     if (!this.isMobile()) {
