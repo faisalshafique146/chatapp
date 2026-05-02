@@ -6,7 +6,7 @@ export type ConnectionState = 'connecting' | 'connected' | 'disconnected';
 
 export interface ChatSocketConnectContext {
   userId: string;
-  roomId: string;
+  roomId?: string | null;
 }
 
 export interface ChatSocketMessagePayload {

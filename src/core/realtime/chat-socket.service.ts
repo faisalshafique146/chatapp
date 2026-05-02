@@ -38,7 +38,7 @@ export class ChatSocketService {
     }
 
     this.currentUserId = context.userId;
-    this.currentRoomId = context.roomId;
+    this.currentRoomId = context.roomId ?? null;
 
     if (this.socket?.connected || this.socket?.active) {
       return;
@@ -166,7 +166,7 @@ export class ChatSocketService {
         if (this.currentUserId) {
           socket.emit('chat:sync', {
             userId: this.currentUserId,
-            roomId: this.currentRoomId ?? undefined
+            roomId: this.currentRoomId || undefined
           });
         }
 

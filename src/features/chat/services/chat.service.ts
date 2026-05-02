@@ -60,7 +60,7 @@ export class ChatService implements OnDestroy {
   private readonly usersState = signal<User[]>([]);
   private readonly roomsState = signal<ChatRoom[]>([]);
   private readonly messagesState = signal<Record<string, Message[]>>({});
-  private readonly activeRoomIdState = signal<string>('');
+  private readonly activeRoomIdState = signal<string | null>(null);
   private readonly typingState = signal<{ roomId: string; userId: string } | null>(null);
   private readonly connectionStateSignal = signal<ConnectionState>('disconnected');
   private readonly initializedState = signal(false);
@@ -81,7 +81,11 @@ export class ChatService implements OnDestroy {
 
   readonly rooms = computed(() => this.roomsState());
   readonly currentRoom = computed(() => this.roomsState().find((room) => room.id === this.activeRoomIdState()) ?? null);
-  readonly currentMessages = computed(() => this.messagesState()[this.activeRoomIdState()] ?? []);
+  readonly currentMessages = computed(() => {
+    const activeRoomId = this.activeRoomIdState();
+
+    return activeRoomId ? this.messagesState()[activeRoomId] ?? [] : [];
+  });
   readonly currentContact = computed(() => {
     const room = this.currentRoom();
 
@@ -140,8 +144,10 @@ export class ChatService implements OnDestroy {
           this.applySnapshot(snapshot);
           this.initializedState.set(true);
 
-          if (this.realtimeTransport.enabled && this.realtimeTransport.connectionState() === 'connected') {
-            this.realtimeTransport.joinRoom(this.activeRoomIdState());
+          const activeRoomId = this.activeRoomIdState();
+
+          if (this.realtimeTransport.enabled && this.realtimeTransport.connectionState() === 'connected' && activeRoomId) {
+            this.realtimeTransport.joinRoom(activeRoomId);
           }
         },
         error: (error) => {
@@ -331,10 +337,8 @@ export class ChatService implements OnDestroy {
       this.messagesState.set(snapshot.messagesByRoom);
     }
 
-    if (snapshot.activeRoomId) {
-      this.activeRoomIdState.set(snapshot.activeRoomId);
-    } else if (!this.activeRoomIdState() && this.roomsState().length > 0) {
-      this.activeRoomIdState.set(this.roomsState()[0].id);
+    if (snapshot.activeRoomId !== undefined) {
+      this.activeRoomIdState.set(snapshot.activeRoomId ?? null);
     }
   }
 
