@@ -237,7 +237,7 @@ export class ChatService implements OnDestroy {
     formData.append('clientMessageId', clientMessageId);
 
     if (imageFile) {
-      formData.append('image', imageFile);
+      formData.append('image', imageFile, imageFile.name);
     }
 
     this.http.post<ApiEnvelope<SendMessageResponse>>(`${API_BASE_URL}/messages`, formData).subscribe({
