@@ -28,9 +28,13 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly sessionState = signal<AuthSession | null>(this.readSession());
 
-  readonly session = this.sessionState.asReadonly();
-  readonly currentUser = computed(() => this.sessionState()?.user ?? null);
-  readonly isAuthenticated = computed(() => this.sessionState() !== null);
+  readonly session = computed(() => {
+    const session = this.sessionState();
+
+    return this.isSessionExpired(session) ? null : session;
+  });
+  readonly currentUser = computed(() => this.session()?.user ?? null);
+  readonly isAuthenticated = computed(() => this.session() !== null);
 
   signIn(payload: SignInPayload): Observable<AuthSession> {
     return this.http
@@ -101,10 +105,31 @@ export class AuthService {
     }
 
     try {
-      return JSON.parse(storedValue) as AuthSession;
+      const session = JSON.parse(storedValue) as AuthSession;
+
+      if (this.isSessionExpired(session)) {
+        window.localStorage.removeItem(this.storageKey);
+        return null;
+      }
+
+      return session;
     } catch {
       return null;
     }
+  }
+
+  private isSessionExpired(session: AuthSession | null): boolean {
+    if (!session?.expiresAt) {
+      return true;
+    }
+
+    const expiresAt = Date.parse(session.expiresAt);
+
+    if (Number.isNaN(expiresAt)) {
+      return true;
+    }
+
+    return expiresAt <= Date.now();
   }
 
   private canUseStorage(): boolean {

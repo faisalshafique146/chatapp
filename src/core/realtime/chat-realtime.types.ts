@@ -33,6 +33,7 @@ export interface ChatSocketMessageStatusPayload {
   roomId: string;
   messageId: string;
   status: MessageStatus;
+  readerId?: string;
 }
 
 export interface ChatSocketSnapshot {

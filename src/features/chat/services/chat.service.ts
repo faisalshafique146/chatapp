@@ -194,10 +194,7 @@ export class ChatService implements OnDestroy {
 
     this.activeRoomIdState.set(roomId);
     this.typingState.set(null);
-    this.updateRoom(roomId, (room) => ({
-      ...room,
-      unreadCount: 0
-    }));
+    this.clearUnreadCount(roomId);
 
     if (this.realtimeTransport.enabled) {
       if (previousRoomId && previousRoomId !== roomId) {
@@ -265,6 +262,7 @@ export class ChatService implements OnDestroy {
     this.incomingMessageSubject.next(message);
 
     if (message.senderId !== this.currentUserState().id && message.roomId === this.activeRoomIdState()) {
+      this.clearUnreadCount(message.roomId);
       this.markConversationRead(message.roomId);
     }
   }
@@ -362,6 +360,7 @@ export class ChatService implements OnDestroy {
       .subscribe({
         next: () => {
           this.updateMessageStatus(roomId, undefined, 'read', true);
+          this.clearUnreadCount(roomId);
         },
         error: (error) => {
           console.error('[read receipt]', error);
@@ -403,11 +402,23 @@ export class ChatService implements OnDestroy {
 
   private handleRealtimeMessageStatus(payload: ChatSocketMessageStatusPayload): void {
     if (payload.messageId === '*') {
-      this.updateMessageStatus(payload.roomId, undefined, payload.status, true);
+      if (payload.readerId && payload.readerId === this.currentUserState().id) {
+        this.updateMessageStatus(payload.roomId, undefined, payload.status, true);
+      } else {
+        this.updateOutgoingConversationStatus(payload.roomId, payload.status);
+      }
+
+      if (payload.status === 'read') {
+        this.clearUnreadCount(payload.roomId);
+      }
       return;
     }
 
     this.updateMessageStatus(payload.roomId, payload.messageId, payload.status);
+
+    if (payload.status === 'read') {
+      this.clearUnreadCount(payload.roomId);
+    }
   }
 
   private upsertMessage(message: Message, incrementUnread = false): void {
@@ -467,6 +478,29 @@ export class ChatService implements OnDestroy {
 
   private updateRoom(roomId: string, updater: (room: ChatRoom) => ChatRoom): void {
     this.roomsState.update((rooms) => rooms.map((room) => (room.id === roomId ? updater(room) : room)));
+  }
+
+  private clearUnreadCount(roomId: string): void {
+    this.updateRoom(roomId, (room) => ({
+      ...room,
+      unreadCount: 0
+    }));
+  }
+
+  private updateOutgoingConversationStatus(roomId: string, status: MessageStatus): void {
+    const currentUserId = this.currentUserState().id;
+
+    this.messagesState.update((messagesByRoom) => ({
+      ...messagesByRoom,
+      [roomId]: (messagesByRoom[roomId] ?? []).map((message) =>
+        message.senderId === currentUserId && (message.receiverId === roomId || message.roomId === roomId)
+          ? {
+              ...message,
+              status
+            }
+          : message
+      )
+    }));
   }
 
   private updateMessageStatus(
