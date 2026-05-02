@@ -68,8 +68,9 @@ export class ChatWindowComponent {
     effect(() => {
       const viewport = this.messageViewport()?.nativeElement;
       const latestMessageId = this.messages().at(-1)?.id;
+      const typingUser = this.typingUser();
 
-      if (!viewport || !latestMessageId) {
+      if (!viewport || (!latestMessageId && !typingUser)) {
         return;
       }
 
