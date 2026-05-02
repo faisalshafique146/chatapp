@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -20,7 +20,7 @@ import { AvatarComponent } from '../../../../shared/ui/avatar/avatar.component';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, DatePipe, ReactiveFormsModule, AvatarComponent],
+  imports: [DatePipe, ReactiveFormsModule, AvatarComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -9,7 +8,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 @Component({
   selector: 'app-chat-layout',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, ChatWindowComponent],
+  imports: [SidebarComponent, ChatWindowComponent],
   templateUrl: './chat-layout.component.html',
   styleUrl: './chat-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

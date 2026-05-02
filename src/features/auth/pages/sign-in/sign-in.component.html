@@ -23,10 +23,12 @@
       <label class="auth-field">
         <span>Email</span>
         <input type="email" formControlName="email" placeholder="you@hisync.com" autocomplete="email" />
-        <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">Email is required.</small>
-        <small *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
-          Enter a valid email address.
-        </small>
+        @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
+          <small>Email is required.</small>
+        }
+        @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
+          <small>Enter a valid email address.</small>
+        }
       </label>
 
       <label class="auth-field">
@@ -42,12 +44,12 @@
             {{ showPassword() ? 'Hide' : 'Show' }}
           </button>
         </div>
-        <small *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
-          Password is required.
-        </small>
-        <small *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
-          Password should be at least 8 characters.
-        </small>
+        @if (form.get('password')?.touched && form.get('password')?.hasError('required')) {
+          <small>Password is required.</small>
+        }
+        @if (form.get('password')?.touched && form.get('password')?.hasError('minlength')) {
+          <small>Password should be at least 8 characters.</small>
+        }
       </label>
 
       <div class="auth-form__row">

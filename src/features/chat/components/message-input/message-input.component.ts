@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, viewChild, signal, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -13,7 +12,7 @@ export interface MessageSubmitPayload {
 @Component({
   selector: 'app-message-input',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './message-input.component.html',
   styleUrl: './message-input.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

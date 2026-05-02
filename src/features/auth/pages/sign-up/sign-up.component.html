@@ -28,17 +28,17 @@
         <input
           type="text"
           formControlName="fullName"
-          placeholder="Ayesha Khan"
+          placeholder="Hi Sync"
           autocomplete="name"
           autocapitalize="words"
         />
         <small class="auth-field__hint">Shown on your profile and in chats.</small>
-        <small class="auth-field__error" *ngIf="form.get('fullName')?.touched && form.get('fullName')?.hasError('required')">
-          Full name is required.
-        </small>
-        <small class="auth-field__error" *ngIf="form.get('fullName')?.touched && form.get('fullName')?.hasError('minlength')">
-          Use at least 3 characters.
-        </small>
+        @if (form.get('fullName')?.touched && form.get('fullName')?.hasError('required')) {
+          <small class="auth-field__error">Full name is required.</small>
+        }
+        @if (form.get('fullName')?.touched && form.get('fullName')?.hasError('minlength')) {
+          <small class="auth-field__error">Use at least 3 characters.</small>
+        }
       </label>
 
       <label class="auth-field auth-field--half">
@@ -46,18 +46,18 @@
         <input
           type="text"
           formControlName="handle"
-          placeholder="ayesha"
+          placeholder="hisync"
           autocomplete="username"
           autocapitalize="none"
           spellcheck="false"
         />
         <small class="auth-field__hint">This is your public chat handle.</small>
-        <small class="auth-field__error" *ngIf="form.get('handle')?.touched && form.get('handle')?.hasError('required')">
-          Username is required.
-        </small>
-        <small class="auth-field__error" *ngIf="form.get('handle')?.touched && form.get('handle')?.hasError('minlength')">
-          Use at least 3 characters.
-        </small>
+        @if (form.get('handle')?.touched && form.get('handle')?.hasError('required')) {
+          <small class="auth-field__error">Username is required.</small>
+        }
+        @if (form.get('handle')?.touched && form.get('handle')?.hasError('minlength')) {
+          <small class="auth-field__error">Use at least 3 characters.</small>
+        }
       </label>
 
       <label class="auth-field auth-field--full">
@@ -68,12 +68,12 @@
           (change)="onProfilePicSelected($event)"
         />
         <small class="auth-field__hint">Optional. PNG, JPG, WebP, or GIF. Max size 5 MB.</small>
-        <small class="auth-field__error" *ngIf="form.get('profilePic')?.touched && form.get('profilePic')?.hasError('invalidFileType')">
-          Please choose an image file.
-        </small>
-        <small class="auth-field__error" *ngIf="form.get('profilePic')?.touched && form.get('profilePic')?.hasError('fileTooLarge')">
-          Profile images must be 5 MB or smaller.
-        </small>
+        @if (form.get('profilePic')?.touched && form.get('profilePic')?.hasError('invalidFileType')) {
+          <small class="auth-field__error">Please choose an image file.</small>
+        }
+        @if (form.get('profilePic')?.touched && form.get('profilePic')?.hasError('fileTooLarge')) {
+          <small class="auth-field__error">Profile images must be 5 MB or smaller.</small>
+        }
         @if (form.get('profilePic')?.value; as profilePic) {
           <small class="auth-field__hint">Selected: {{ profilePic.name }}</small>
         }
@@ -89,10 +89,12 @@
           inputmode="email"
         />
         <small class="auth-field__hint">Used for sign-in, recovery, and account notices.</small>
-        <small class="auth-field__error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">Email is required.</small>
-        <small class="auth-field__error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
-          Enter a valid email address.
-        </small>
+        @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
+          <small class="auth-field__error">Email is required.</small>
+        }
+        @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
+          <small class="auth-field__error">Enter a valid email address.</small>
+        }
       </label>
 
       <label class="auth-field auth-field--full">
@@ -114,12 +116,12 @@
           </button>
         </div>
         <small class="auth-field__hint">Use at least 8 characters with a mix of letters and numbers.</small>
-        <small class="auth-field__error" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
-          Password is required.
-        </small>
-        <small class="auth-field__error" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
-          Password should be at least 8 characters.
-        </small>
+        @if (form.get('password')?.touched && form.get('password')?.hasError('required')) {
+          <small class="auth-field__error">Password is required.</small>
+        }
+        @if (form.get('password')?.touched && form.get('password')?.hasError('minlength')) {
+          <small class="auth-field__error">Password should be at least 8 characters.</small>
+        }
       </label>
 
       <label class="auth-field auth-field--full">
@@ -130,24 +132,23 @@
           placeholder="Repeat your password"
           autocomplete="new-password"
         />
-        <small class="auth-field__error" *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.hasError('required')">
-          Please confirm your password.
-        </small>
-        <small class="auth-field__error" *ngIf="form.touched && form.hasError('passwordMismatch')">
-          The passwords do not match.
-        </small>
+        @if (form.get('confirmPassword')?.touched && form.get('confirmPassword')?.hasError('required')) {
+          <small class="auth-field__error">Please confirm your password.</small>
+        }
+        @if (form.touched && form.hasError('passwordMismatch')) {
+          <small class="auth-field__error">The passwords do not match.</small>
+        }
       </label>
 
       <label class="auth-check auth-check--full">
         <input type="checkbox" formControlName="acceptTerms" />
         <span>I agree to the Hi-Sync terms and privacy policy.</span>
       </label>
-      <small
-        class="auth-field__error auth-form__helper auth-form__helper--full"
-        *ngIf="form.get('acceptTerms')?.touched && form.get('acceptTerms')?.hasError('requiredTrue')"
-      >
-        You must accept the terms to continue.
-      </small>
+      @if (form.get('acceptTerms')?.touched && form.get('acceptTerms')?.hasError('requiredTrue')) {
+        <small class="auth-field__error auth-form__helper auth-form__helper--full">
+          You must accept the terms to continue.
+        </small>
+      }
 
       <button type="submit" class="auth-form__submit auth-form__submit--full" [class.auth-form__submit--loading]="isSubmitting()">
         {{ isSubmitting() ? 'Creating account...' : 'Create account' }}

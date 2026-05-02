@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -44,7 +43,7 @@ const profileImageValidator: ValidatorFn = (control: AbstractControl): Validatio
 @Component({
   selector: 'app-sign-up',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, AuthShellComponent],
+  imports: [ReactiveFormsModule, RouterLink, AuthShellComponent],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
