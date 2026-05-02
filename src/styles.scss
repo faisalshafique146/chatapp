@@ -124,3 +124,144 @@ img {
     transform: translateY(0);
   }
 }
+
+.chat-header__account-card {
+  padding: 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  background: var(--bg-surface-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+.chat-header__account-hero {
+  padding: 0.9rem;
+  border-radius: 20px;
+  background: var(--bg-surface);
+}
+
+.chat-header__account-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.chat-header__account-edit {
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--bg-accent-soft);
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
+.chat-header__account-profile-copy {
+  margin-top: 0.8rem;
+}
+
+.chat-header__account-profile-copy p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.chat-header__account-profile-copy strong {
+  display: block;
+  margin-top: 0.22rem;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.chat-header__account-profile-copy span {
+  display: block;
+  margin-top: 0.18rem;
+  color: var(--text-secondary);
+  font-size: 0.84rem;
+}
+
+.chat-header__account-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+}
+
+.chat-header__account-badges span {
+  padding: 0.32rem 0.62rem;
+  border-radius: 999px;
+  background: var(--bg-accent-soft);
+  color: var(--text-primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.chat-header__account-stats {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.75rem 0 0;
+}
+
+.chat-header__account-stats div {
+  padding: 0.7rem 0.75rem;
+  border-radius: 16px;
+  background: var(--bg-input);
+}
+
+.chat-header__account-stats span {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.chat-header__account-stats strong {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--text-primary);
+  font-size: 0.84rem;
+  word-break: break-word;
+}
+
+.chat-header__account-actions {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+
+.chat-header__account-action {
+  display: grid;
+  gap: 0.1rem;
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  text-align: left;
+}
+
+.chat-header__account-action span {
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.chat-header__account-action small {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+}
+
+.chat-header__logout {
+  width: 100%;
+  margin-top: 0.75rem;
+  min-height: 2.9rem;
+  padding: 0.72rem 0.85rem;
+  background: rgba(181, 72, 72, 0.18);
+  color: #b54848;
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .chat-header__account-edit {
+    padding-inline: 0.7rem;
+  }
+}

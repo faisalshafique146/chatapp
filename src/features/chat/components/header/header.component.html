@@ -58,36 +58,47 @@
         @if (isAccountMenuOpen()) {
           <section class="chat-header__account-menu" role="dialog" aria-label="Account details and settings">
             <div class="chat-header__account-card">
-              <div class="chat-header__account-profile">
-                <app-avatar
-                  [name]="user.fullName"
-                  [accentColor]="'#2a7d60'"
-                  [imageUrl]="user.profilePic ?? undefined"
-                  [size]="'lg'"
-                  [online]="true"
-                ></app-avatar>
+              <div class="chat-header__account-hero">
+                <div class="chat-header__account-hero-top">
+                  <app-avatar
+                    [name]="user.fullName"
+                    [accentColor]="'#2a7d60'"
+                    [imageUrl]="user.profilePic ?? undefined"
+                    [size]="'lg'"
+                    [online]="true"
+                  ></app-avatar>
+
+                  <button type="button" class="chat-header__account-edit" (click)="openProfileEditor()">
+                    Edit profile
+                  </button>
+                </div>
 
                 <div class="chat-header__account-profile-copy">
                   <p>Signed in as</p>
                   <strong>{{ user.fullName }}</strong>
                   <span>@{{ user.handle }}</span>
                 </div>
+
+                <div class="chat-header__account-badges">
+                  <span>{{ user.role }}</span>
+                  <span>{{ user.createdAt | date: 'mediumDate' }}</span>
+                </div>
               </div>
 
-              <dl class="chat-header__account-stats">
+              <div class="chat-header__account-stats">
                 <div>
-                  <dt>Email</dt>
-                  <dd>{{ user.email }}</dd>
+                  <span>Email</span>
+                  <strong>{{ user.email }}</strong>
                 </div>
                 <div>
-                  <dt>Role</dt>
-                  <dd>{{ user.role }}</dd>
+                  <span>Role</span>
+                  <strong>{{ user.role }}</strong>
                 </div>
                 <div>
-                  <dt>Member since</dt>
-                  <dd>{{ user.createdAt | date: 'mediumDate' }}</dd>
+                  <span>Member since</span>
+                  <strong>{{ user.createdAt | date: 'mediumDate' }}</strong>
                 </div>
-              </dl>
+              </div>
 
               <div class="chat-header__account-actions">
                 <button type="button" class="chat-header__account-action" (click)="copyValue(user.email, 'email')">
@@ -102,7 +113,7 @@
 
                 <button type="button" class="chat-header__account-action" (click)="openProfileEditor()">
                   <span>Profile settings</span>
-                  <small>Edit your name and avatar</small>
+                  <small>Edit your name, photo, and password</small>
                 </button>
 
                 <div class="chat-header__account-action chat-header__account-action--static">
