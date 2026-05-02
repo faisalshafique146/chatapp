@@ -20,14 +20,14 @@
   color: var(--text-primary);
   font-weight: 600;
   cursor: pointer;
-  position: relative;
+}
 
-  input {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
+.message-input__file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .message-input__field {

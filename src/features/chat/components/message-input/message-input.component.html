@@ -1,12 +1,12 @@
-<form class="message-input" (ngSubmit)="submitMessage()">
-  <label class="message-input__attach">
-    <input
-      type="file"
-      accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
-      (change)="handleImageSelected($event)"
-    />
-    <span>Attach</span>
-  </label>
+<div class="message-input">
+  <button type="button" class="message-input__attach" (click)="openFilePicker()">Attach</button>
+  <input
+    #fileInput
+    class="message-input__file-input"
+    type="file"
+    accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+    (change)="handleImageSelected($event)"
+  />
 
   <label class="message-input__field">
     <span class="visually-hidden">Type your message</span>
@@ -28,7 +28,7 @@
     }
   </label>
 
-  <button type="submit" [disabled]="!messageControl.value.trim() && !selectedImage()">
+  <button type="button" (click)="submitMessage()" [disabled]="!messageControl.value.trim() && !selectedImage()">
     Send
   </button>
-</form>
+</div>

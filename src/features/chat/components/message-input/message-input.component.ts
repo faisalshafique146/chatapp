@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, signal, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, viewChild, signal, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 const allowedAttachmentTypes = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']);
@@ -21,6 +21,7 @@ export interface MessageSubmitPayload {
 export class MessageInputComponent implements OnDestroy {
   readonly messageSubmit = output<MessageSubmitPayload>();
   readonly typingChanged = output<boolean>();
+  private readonly fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
 
   readonly messageControl = new FormControl('', {
     nonNullable: true,
@@ -78,14 +79,14 @@ export class MessageInputComponent implements OnDestroy {
     if (!allowedAttachmentTypes.has(file.type)) {
       this.selectedImage.set(null);
       this.selectedImageError.set('Please choose a supported image file.');
-      input.value = '';
+      this.resetFileInput();
       return;
     }
 
     if (file.size > maxAttachmentSize) {
       this.selectedImage.set(null);
       this.selectedImageError.set('Image attachments must be 5 MB or smaller.');
-      input.value = '';
+      this.resetFileInput();
       return;
     }
 
@@ -95,6 +96,11 @@ export class MessageInputComponent implements OnDestroy {
 
   removeAttachment(): void {
     this.clearAttachment();
+    this.resetFileInput();
+  }
+
+  openFilePicker(): void {
+    this.fileInput()?.nativeElement.click();
   }
 
   ngOnDestroy(): void {
@@ -105,6 +111,14 @@ export class MessageInputComponent implements OnDestroy {
   private clearAttachment(): void {
     this.selectedImage.set(null);
     this.selectedImageError.set(null);
+  }
+
+  private resetFileInput(): void {
+    const input = this.fileInput()?.nativeElement;
+
+    if (input) {
+      input.value = '';
+    }
   }
 
   private setTyping(isTyping: boolean): void {
