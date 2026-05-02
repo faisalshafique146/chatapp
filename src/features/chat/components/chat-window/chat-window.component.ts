@@ -86,6 +86,10 @@ export class ChatWindowComponent {
     this.chatService.sendMessage(content, imageFile);
   }
 
+  setTyping(isTyping: boolean): void {
+    this.chatService.setTyping(isTyping);
+  }
+
   isCurrentUserMessage(message: Message): boolean {
     return message.senderId === this.currentUser().id;
   }

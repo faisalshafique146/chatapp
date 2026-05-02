@@ -14,6 +14,7 @@
       rows="1"
       placeholder="Write a message"
       [formControl]="messageControl"
+      (input)="handleMessageInput()"
       (keydown.enter)="handleEnter($event)"
     ></textarea>
     @if (selectedImage(); as imageFile) {
