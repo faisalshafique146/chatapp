@@ -100,10 +100,10 @@
                   <small>{{ copyStatus() === 'handle' ? 'Copied' : 'Share your chat handle' }}</small>
                 </button>
 
-                <div class="chat-header__account-action chat-header__account-action--static">
+                <button type="button" class="chat-header__account-action" (click)="openProfileEditor()">
                   <span>Profile settings</span>
-                  <small>Edit your name, avatar, and handle</small>
-                </div>
+                  <small>Edit your name and avatar</small>
+                </button>
 
                 <div class="chat-header__account-action chat-header__account-action--static">
                   <span>Notification settings</span>
@@ -123,4 +123,160 @@
       </div>
     }
   </div>
+
+  @if (isProfileEditorOpen() && currentUser(); as user) {
+    <div class="chat-header__profile-overlay" role="presentation" (click)="closeProfileEditor()">
+      <section
+        class="chat-header__profile-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Edit profile"
+        (click)="$event.stopPropagation()"
+      >
+        <header class="chat-header__profile-modal-header">
+          <div>
+            <p>Edit profile</p>
+            <h2>Update your name and photo</h2>
+          </div>
+          <button type="button" class="chat-header__profile-modal-close" (click)="closeProfileEditor()">Close</button>
+        </header>
+
+        <div class="chat-header__profile-modal-hero">
+          <app-avatar
+            [name]="user.fullName"
+            [accentColor]="'#2a7d60'"
+            [imageUrl]="selectedProfilePic() ? undefined : (user.profilePic ?? undefined)"
+            [size]="'lg'"
+            [online]="true"
+          ></app-avatar>
+
+          <div class="chat-header__profile-modal-copy">
+            <strong>{{ user.fullName }}</strong>
+            <span>@{{ user.handle }}</span>
+            <small>You can only change the display name and profile image.</small>
+          </div>
+        </div>
+
+        @if (profileError(); as errorMessage) {
+          <p class="chat-header__profile-error" aria-live="polite">{{ errorMessage }}</p>
+        }
+
+        <form class="chat-header__profile-form" (submit)="saveProfile(); $event.preventDefault()">
+          <label class="chat-header__profile-field">
+            <span>Full name</span>
+            <input type="text" [formControl]="profileNameControl" autocomplete="name" />
+          </label>
+
+          <div class="chat-header__profile-readonly">
+            <label>
+              <span>Username</span>
+              <input type="text" [value]="user.handle" readonly />
+            </label>
+
+            <label>
+              <span>Email</span>
+              <input type="email" [value]="user.email" readonly />
+            </label>
+          </div>
+
+          <div class="chat-header__profile-upload">
+            <button type="button" class="chat-header__profile-upload-button" (click)="profileFileInput.click()">
+              Choose new photo
+            </button>
+            <input
+              #profileFileInput
+              class="chat-header__profile-file-input"
+              type="file"
+              accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+              (change)="handleProfilePicSelected($event)"
+            />
+
+            @if (selectedProfilePic(); as profilePic) {
+              <div class="chat-header__profile-file-meta">
+                <span>{{ profilePic.name }}</span>
+                <button type="button" (click)="removeSelectedProfilePic()">Remove</button>
+              </div>
+            }
+          </div>
+
+          <div class="chat-header__profile-actions">
+            <button type="button" class="chat-header__profile-cancel" (click)="cancelProfileEdit()">Cancel</button>
+            <button type="button" class="chat-header__profile-save" [disabled]="isSavingProfile()" (click)="saveProfile()">
+              {{ isSavingProfile() ? 'Saving...' : 'Save changes' }}
+            </button>
+          </div>
+        </form>
+
+        <section class="chat-header__security-panel">
+          <div class="chat-header__security-heading">
+            <div>
+              <p>Security</p>
+              <h3>Change password</h3>
+            </div>
+            <span>Keep your account secure</span>
+          </div>
+
+          @if (passwordError(); as errorMessage) {
+            <p class="chat-header__security-message chat-header__security-message--error" aria-live="polite">
+              {{ errorMessage }}
+            </p>
+          }
+
+          @if (passwordSuccess(); as successMessage) {
+            <p class="chat-header__security-message chat-header__security-message--success" aria-live="polite">
+              {{ successMessage }}
+            </p>
+          }
+
+          <form class="chat-header__password-form" (submit)="savePassword(); $event.preventDefault()">
+            <label class="chat-header__password-field">
+              <span>Current password</span>
+              <div class="chat-header__password-input-row">
+                <input
+                  [type]="showCurrentPassword() ? 'text' : 'password'"
+                  [formControl]="currentPasswordControl"
+                  autocomplete="current-password"
+                />
+                <button type="button" class="chat-header__password-toggle" (click)="toggleCurrentPasswordVisibility()">
+                  {{ showCurrentPassword() ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+            </label>
+
+            <label class="chat-header__password-field">
+              <span>New password</span>
+              <div class="chat-header__password-input-row">
+                <input
+                  [type]="showNewPassword() ? 'text' : 'password'"
+                  [formControl]="newPasswordControl"
+                  autocomplete="new-password"
+                />
+                <button type="button" class="chat-header__password-toggle" (click)="toggleNewPasswordVisibility()">
+                  {{ showNewPassword() ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+            </label>
+
+            <label class="chat-header__password-field">
+              <span>Confirm new password</span>
+              <div class="chat-header__password-input-row">
+                <input
+                  [type]="showConfirmPassword() ? 'text' : 'password'"
+                  [formControl]="confirmNewPasswordControl"
+                  autocomplete="new-password"
+                />
+                <button type="button" class="chat-header__password-toggle" (click)="toggleConfirmPasswordVisibility()">
+                  {{ showConfirmPassword() ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+            </label>
+
+            <button type="button" class="chat-header__password-save" [disabled]="isSavingPassword()" (click)="savePassword()">
+              {{ isSavingPassword() ? 'Updating...' : 'Update password' }}
+            </button>
+          </form>
+        </section>
+      </section>
+    </div>
+  }
 </header>

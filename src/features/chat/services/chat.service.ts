@@ -281,6 +281,10 @@ export class ChatService implements OnDestroy {
     this.realtimeTransport.setTyping(room.id, isTyping);
   }
 
+  refreshCurrentUserFromSession(): void {
+    this.syncCurrentUserFromSession();
+  }
+
   private registerRealtimeListeners(): void {
     if (!this.realtimeTransport.enabled) {
       return;

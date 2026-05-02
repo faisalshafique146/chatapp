@@ -33,3 +33,14 @@ export interface SignUpPayload {
   acceptTerms: boolean;
   profilePic?: File | null;
 }
+
+export interface UpdateProfilePayload {
+  fullName: string;
+  profilePic?: File | null;
+}
+
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}

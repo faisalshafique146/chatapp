@@ -4,7 +4,14 @@ import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core
 import { Observable, map, tap } from 'rxjs';
 
 import { API_BASE_URL } from '../config/backend.config';
-import { AuthSession, AuthUser, SignInPayload, SignUpPayload } from '../models/auth-user.model';
+import {
+  AuthSession,
+  AuthUser,
+  ChangePasswordPayload,
+  SignInPayload,
+  SignUpPayload,
+  UpdateProfilePayload
+} from '../models/auth-user.model';
 
 interface ApiEnvelope<T> {
   statusCode: number;
@@ -17,6 +24,18 @@ interface AuthPayload {
   accessToken: string;
   refreshToken: string;
   expiresAt: string;
+}
+
+interface UpdateProfileResponse {
+  user: AuthUser;
+}
+
+interface UpdateProfileAvatarResponse {
+  user: AuthUser;
+}
+
+interface ChangePasswordResponse {
+  user: AuthUser;
 }
 
 @Injectable({
@@ -76,6 +95,38 @@ export class AuthService {
     }
   }
 
+  updateProfile(payload: UpdateProfilePayload): Observable<AuthUser> {
+    return this.http
+      .patch<ApiEnvelope<UpdateProfileResponse>>(`${API_BASE_URL}/users/me/name`, {
+        fullName: payload.fullName
+      })
+      .pipe(
+        map((response) => response.data.user),
+        tap((user) => this.updateSessionUser(user))
+      );
+  }
+
+  updateProfileAvatar(profilePic: File): Observable<AuthUser> {
+    const formData = new FormData();
+    formData.append('profilePic', profilePic, profilePic.name);
+
+    return this.http
+      .patch<ApiEnvelope<UpdateProfileAvatarResponse>>(`${API_BASE_URL}/users/me/avatar`, formData)
+      .pipe(
+        map((response) => response.data.user),
+        tap((user) => this.updateSessionUser(user))
+      );
+  }
+
+  changePassword(payload: ChangePasswordPayload): Observable<AuthUser> {
+    return this.http
+      .patch<ApiEnvelope<ChangePasswordResponse>>(`${API_BASE_URL}/users/me/password`, payload)
+      .pipe(
+        map((response) => response.data.user),
+        tap((user) => this.updateSessionUser(user))
+      );
+  }
+
   private toSession(payload: AuthPayload): AuthSession {
     return {
       user: payload.user,
@@ -91,6 +142,19 @@ export class AuthService {
     if (this.canUseStorage()) {
       window.localStorage.setItem(this.storageKey, JSON.stringify(session));
     }
+  }
+
+  updateSessionUser(user: AuthUser): void {
+    const session = this.session();
+
+    if (!session) {
+      return;
+    }
+
+    this.persistSession({
+      ...session,
+      user
+    });
   }
 
   private readSession(): AuthSession | null {

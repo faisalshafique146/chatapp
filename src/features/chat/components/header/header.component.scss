@@ -5,7 +5,6 @@
   padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--border-color);
   background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(14px);
 }
 
 .chat-header__content {
@@ -15,8 +14,8 @@
   strong,
   span {
     display: block;
-    white-space: nowrap;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
   }
 
@@ -46,7 +45,6 @@
 }
 
 .chat-header__actions {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 0.65rem;
@@ -56,14 +54,18 @@
 .chat-header__icon-button,
 .chat-header__account-toggle,
 .chat-header__logout,
-.chat-header__account-action {
+.chat-header__account-action,
+.chat-header__profile-modal-close,
+.chat-header__profile-upload-button,
+.chat-header__profile-cancel,
+.chat-header__profile-save,
+.chat-header__password-toggle,
+.chat-header__password-save {
   border: 0;
   border-radius: 14px;
   background: var(--bg-accent-soft);
   color: var(--text-primary);
-  transition:
-    background-color 160ms ease,
-    transform 160ms ease;
+  transition: .16s;
 
   &:hover {
     background: var(--bg-hover);
@@ -88,8 +90,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.35rem 0.55rem 0.35rem 0.38rem;
   min-height: 52px;
+  padding: 0.35rem 0.55rem 0.35rem 0.38rem;
 }
 
 .chat-header__account-copy {
@@ -100,10 +102,9 @@
   strong,
   small {
     display: block;
-    min-width: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   strong {
@@ -127,109 +128,261 @@
   max-width: calc(100vw - 1rem);
   max-height: min(50dvh, calc(100dvh - 7rem));
   overflow: auto;
-  overscroll-behavior: contain;
 }
 
-.chat-header__account-card {
-  padding: 0.7rem;
+.chat-header__profile-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(10, 18, 16, 0.55);
+}
+
+.chat-header__profile-modal {
+  width: min(38rem, 100%);
+  max-height: 88dvh;
+  overflow: auto;
+  padding: 1.1rem;
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  background: var(--bg-surface);
-  box-shadow: var(--shadow-soft);
+  border-radius: 28px;
+  background: linear-gradient(180deg, var(--bg-surface), var(--bg-surface-strong));
+  box-shadow: 0 28px 80px rgba(4, 16, 12, 0.32);
 }
 
-.chat-header__account-profile {
+.chat-header__profile-modal-header,
+.chat-header__profile-modal-hero,
+.chat-header__security-heading {
   display: flex;
-  gap: 0.75rem;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-.chat-header__account-profile-copy {
-  min-width: 0;
+.chat-header__profile-modal-header {
+  p,
+  h2 {
+    margin: 0;
+  }
 
   p,
-  strong,
-  span {
-    margin: 0;
-    display: block;
-  }
-
-  p {
-    color: var(--text-secondary);
-    font-size: 0.76rem;
-    text-transform: uppercase;
+  .chat-header__security-heading p {
+    color: var(--bg-accent);
+    font-size: 0.75rem;
+    font-weight: 800;
     letter-spacing: 0.12em;
-  }
-
-  strong {
-    margin-top: 0.15rem;
-    font-size: 0.95rem;
-  }
-
-  span {
-    margin-top: 0.15rem;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-  }
-}
-
-.chat-header__account-stats {
-  display: grid;
-  gap: 0.55rem;
-  margin: 0.85rem 0 0;
-  padding: 0.75rem 0 0;
-  border-top: 1px solid var(--border-color);
-
-  div {
-    display: grid;
-    gap: 0.2rem;
-  }
-
-  dt {
-    color: var(--text-secondary);
-    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
   }
 
-  dd {
+  h2 {
+    margin-top: 0.35rem;
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    line-height: 1.1;
+  }
+}
+
+.chat-header__profile-modal-close {
+  min-height: 2.6rem;
+  padding: 0 0.85rem;
+  font-weight: 700;
+}
+
+.chat-header__profile-modal-hero {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.chat-header__security-heading div {
+  min-width: 0;
+
+  strong,
+  span,
+  small,
+  p,
+  h3 {
+    display: block;
     margin: 0;
-    color: var(--text-primary);
-    font-size: 0.84rem;
-    word-break: break-word;
-  }
-}
-
-.chat-header__account-actions {
-  display: grid;
-  gap: 0.4rem;
-  margin-top: 0.7rem;
-}
-
-.chat-header__account-action {
-  display: grid;
-  gap: 0.12rem;
-  width: 100%;
-  padding: 0.62rem 0.75rem;
-  text-align: left;
-
-  span {
-    font-size: 0.84rem;
-    font-weight: 700;
   }
 
+  strong,
+  h3 { font-size: 1.05rem; font-weight: 800; }
+
+  span,
   small {
     color: var(--text-secondary);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
+    line-height: 1.5;
   }
 }
 
-.chat-header__logout {
-  width: 100%;
-  margin-top: 0.7rem;
-  padding: 0.72rem 0.85rem;
-  background: rgba(181, 72, 72, 0.3);
+.chat-header__profile-error,
+.chat-header__security-message {
+  margin: 1rem 0 0;
+  padding: 0.8rem 0.9rem;
+  border-radius: 16px;
+  font-size: 0.84rem;
+}
+
+.chat-header__profile-error,
+.chat-header__security-message--error {
+  background: rgba(181, 72, 72, 0.12);
   color: #b54848;
+}
+
+.chat-header__security-message--success {
+  background: rgba(42, 125, 96, 0.12);
+  color: #2a7d60;
+}
+
+.chat-header__profile-form,
+.chat-header__password-form {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.chat-header__profile-field,
+.chat-header__profile-readonly label,
+.chat-header__password-field {
+  display: grid;
+  gap: 0.4rem;
+
+  span {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  input {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.8rem 0.95rem;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    outline: none;
+  }
+}
+
+.chat-header__profile-readonly {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.chat-header__profile-upload {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.chat-header__profile-upload-button {
+  width: fit-content;
+  min-height: 3rem;
+  padding: 0 1rem;
+  border-radius: 16px;
+  background: var(--bg-accent-soft);
+  color: var(--bg-accent);
+  font-weight: 800;
+}
+
+.chat-header__profile-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chat-header__profile-file-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+
+  button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--bg-accent);
+    font-weight: 700;
+  }
+}
+
+.chat-header__profile-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.chat-header__profile-cancel,
+.chat-header__profile-save,
+.chat-header__password-save {
+  min-height: 3rem;
+  padding: 0 1rem;
+  border-radius: 16px;
+  font-weight: 800;
+}
+
+.chat-header__profile-cancel {
+  flex: 1 1 0;
+}
+
+.chat-header__profile-save,
+.chat-header__password-save {
+  background: linear-gradient(135deg, #155c48 0%, #2a7d60 100%);
+  color: var(--text-inverse);
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.75;
+  }
+}
+
+.chat-header__security-panel {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.chat-header__security-heading {
+  align-items: baseline;
+
+  span {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    text-align: right;
+  }
+}
+
+.chat-header__password-input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+
+  input {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+.chat-header__password-toggle {
+  min-width: 5rem;
+  border-radius: 16px;
+  font-weight: 700;
 }
 
 @media (max-width: 640px) {
@@ -238,7 +391,8 @@
     padding: 0.9rem 1rem;
   }
 
-  .chat-header__presence {
+  .chat-header__presence,
+  .chat-header__account-copy {
     display: none;
   }
 
@@ -247,12 +401,46 @@
     gap: 0.55rem;
   }
 
-  .chat-header__account-copy {
-    display: none;
-  }
-
   .chat-header__account-menu {
     width: calc(100vw - 1rem);
     max-height: 50dvh;
+  }
+
+  .chat-header__profile-overlay {
+    padding: 0.75rem;
+  }
+
+  .chat-header__profile-modal {
+    width: 100%;
+    max-height: 92dvh;
+    padding: 0.9rem;
+    border-radius: 24px;
+  }
+
+  .chat-header__profile-modal-header,
+  .chat-header__profile-modal-hero,
+  .chat-header__security-heading,
+  .chat-header__profile-actions,
+  .chat-header__password-input-row {
+    flex-direction: column;
+  }
+
+  .chat-header__profile-modal-close,
+  .chat-header__password-toggle {
+    align-self: flex-end;
+  }
+
+  .chat-header__security-heading span {
+    text-align: left;
+  }
+
+  .chat-header__profile-actions {
+    align-items: stretch;
+  }
+
+  .chat-header__password-toggle {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.8rem;
   }
 }
